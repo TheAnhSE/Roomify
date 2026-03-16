@@ -46,6 +46,3 @@ app.*.map.json
 
 # Flutter generated
 .flutter-plugins
-
-# Figma source files (quá nặng, không cần thiết cho dev)
-Figma/
