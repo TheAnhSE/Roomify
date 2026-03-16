@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
 import '../../data/repositories/auth_repository.dart';
-import 'verify_otp_screen.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -22,18 +21,31 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     super.dispose();
   }
 
-  Future<void> _requestCode() async {
+  Future<void> _resetPassword() async {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _isLoading = true);
     try {
       final email = _emailCtrl.text.trim();
-      await _auth.sendOtp(email);
+      await _auth.resetPassword(email);
       if (!mounted) return;
       
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => VerifyOtpScreen(email: email),
+      // Hiển thị thông báo thành công thay vì chuyển sang màn OTP
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => AlertDialog(
+          title: const Text('Thành công'),
+          content: Text(
+              'Một liên kết đặt lại mật khẩu đã được gửi đến email $email. Vui lòng kiểm tra hộp thư của bạn.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context); // Close dialog
+                Navigator.pop(context); // Go back to login
+              },
+              child: const Text('Quay lại Đăng nhập'),
+            ),
+          ],
         ),
       );
     } catch (e) {
@@ -90,7 +102,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 ),
                 const SizedBox(height: 10),
                 const Text(
-                  'Enter your email or phone we will send the verification code to reset your password',
+                  'Nhập email của bạn, chúng tôi sẽ gửi liên kết để đặt lại mật khẩu mới.',
                   style: TextStyle(
                       fontSize: 13, color: Colors.black54, height: 1.5),
                 ),
@@ -131,24 +143,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       (v == null || !v.contains('@')) ? 'Email không hợp lệ' : null,
                 ),
 
-                const SizedBox(height: 10),
-
-                // ── Reset with phone ──────────────────────────────────────────
-                GestureDetector(
-                  onTap: () {},
-                  child: Text(
-                    'Reset with phone number',
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: AppColors.primary,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-
                 const SizedBox(height: 32),
 
-                // ── Request code button ───────────────────────────────────────
+                // ── Reset password button ─────────────────────────────────────
                 SizedBox(
                   width: double.infinity,
                   height: 54,
@@ -161,14 +158,14 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       textStyle: const TextStyle(
                           fontSize: 16, fontWeight: FontWeight.w600),
                     ),
-                    onPressed: _isLoading ? null : _requestCode,
+                    onPressed: _isLoading ? null : _resetPassword,
                     child: _isLoading
                         ? const SizedBox(
                             width: 22,
                             height: 22,
                             child: CircularProgressIndicator(
                                 color: Colors.white, strokeWidth: 2.5))
-                        : const Text('Request code'),
+                        : const Text('Send Reset Link'),
                   ),
                 ),
               ],
