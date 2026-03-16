@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
 import '../../data/repositories/auth_repository.dart';
 
-// TODO (Người 2): Implement register screen theo Figma page-0005
+// TODO (Người 2): Implement register screen theo Figma:
+//   - Create Account.jpg → layout chính
 // - Fields: fullName, phone, email, password, confirmPassword
 // - Validation: email format, password >= 6 ký tự, passwords phải khớp
 // - Nút "Đăng ký" với loading state (_isLoading)

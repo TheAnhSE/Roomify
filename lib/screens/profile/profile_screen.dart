@@ -4,7 +4,10 @@ import '../../data/repositories/auth_repository.dart';
 import '../../data/repositories/booking_repository.dart';
 import '../../data/models/user_model.dart';
 
-// TODO (Người 5): Implement profile screen theo Figma page-0022 ~ page-0024
+// TODO (Người 5): Implement profile screen theo Figma:
+//   - Profile.jpg       → header (avatar, name, email) + menu items + đăng xuất
+//   - Detail Booking.jpg → BookingHistoryCard layout (hotel name, dates, status badge, nút Huỷ)
+//   - Onboard Booking.jpg → empty state khi chưa có booking nào
 // - Required param: UserModel user
 // - Header: buildAvatar(user, radius: 40) + fullName + email
 // - Nút "Đăng xuất" → AuthRepository.logout() → navigate đến LoginScreen

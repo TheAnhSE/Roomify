@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
 import '../../data/repositories/auth_repository.dart';
 
-// TODO (Người 2): Implement login screen theo Figma page-0004
+// TODO (Người 2): Implement login screen theo Figma:
+//   - Login.jpg          → layout chính
+//   - ForgotPassword.jpg  → flow "Quên mật khẩu?" bước 1
+//   - ForgotPassword2.jpg → flow "Quên mật khẩu?" bước 2 (thông báo gửi email)
 // - Email + password fields với validation
 // - Nút "Đăng nhập" với loading state (_isLoading)
 // - Error message hiển thị bên dưới nút

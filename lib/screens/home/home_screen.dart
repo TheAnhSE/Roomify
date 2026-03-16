@@ -4,7 +4,8 @@ import '../../data/models/user_model.dart';
 import '../../data/repositories/destination_repository.dart';
 import '../../data/repositories/hotel_repository.dart';
 
-// TODO (Người 3): Implement home screen theo Figma page-0006 ~ page-0008
+// TODO (Người 3): Implement home screen theo Figma:
+//   - Home.jpg → layout chính (AppBar, search bar, destination cards, hotel cards)
 // - AppBar: tên app bên trái + buildAvatar(user) bên phải
 // - Search TextField → onSubmitted: navigate đến SearchScreen(query: text)
 // - Section "Địa danh nổi tiếng": horizontal ListView của DestinationCard

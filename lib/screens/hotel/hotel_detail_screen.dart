@@ -3,7 +3,8 @@ import '../../core/constants/app_colors.dart';
 import '../../data/models/hotel_model.dart';
 import '../../data/repositories/room_repository.dart';
 
-// TODO (Người 4): Implement hotel detail screen theo Figma page-0012 ~ page-0015
+// TODO (Người 4): Implement hotel detail screen theo Figma:
+//   - Detail.jpg → layout chính (image gallery, thông tin, tiện nghi, danh sách phòng)
 // - Required param: HotelModel hotel
 // - PageView của hotel.imageUrls — swipeable, có dot indicator
 // - Thông tin khách sạn: name, hàng sao (Icon), rating, address, checkIn/checkOut time

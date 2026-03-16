@@ -4,7 +4,8 @@ import '../../data/models/hotel_model.dart';
 import '../../data/repositories/destination_repository.dart';
 import '../../data/repositories/hotel_repository.dart';
 
-// TODO (Người 3): Implement search screen theo Figma page-0009 ~ page-0011
+// TODO (Người 3): Implement search screen theo Figma:
+//   - Search.jpg → layout chính (search bar, filter dropdown, danh sách kết quả)
 // - Optional params: String? city, String? query
 // - TextField với nút xoá (×)
 // - Dropdown filter: "Tất cả thành phố" + danh sách từ Firestore

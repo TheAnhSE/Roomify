@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
 import '../../data/models/booking_model.dart';
 
-// TODO (Người 4): Implement booking confirmation screen theo Figma page-0018
+// TODO (Người 4): Implement booking confirmation screen theo Figma:
+//   - Payment2.jpg → màn hình xác nhận thành công (icon check, confirmation code, tóm tắt)
 // - Required param: BookingModel booking
 // - Icon check_circle lớn màu xanh lá ở trên cùng
 // - confirmationCode in đậm, chữ to

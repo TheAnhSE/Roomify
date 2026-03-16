@@ -5,7 +5,9 @@ import '../../data/models/room_model.dart';
 import '../../data/models/user_model.dart';
 import '../../data/repositories/booking_repository.dart';
 
-// TODO (Người 4): Implement booking form screen theo Figma page-0016 ~ page-0017
+// TODO (Người 4): Implement booking form screen theo Figma:
+//   - Booking Date.jpg → date range picker + summary card
+//   - Payment1.jpg     → guest info form + nút xác nhận
 // - Required params: HotelModel hotel, RoomModel room, UserModel user
 // - Date selection: showDateRangePicker cho checkIn / checkOut
 //     firstDate: DateTime.now() — không cho chọn ngày trong quá khứ
