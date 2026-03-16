@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "141793310209",
+    "firebase_url": "https://hotel-booking-app-57568-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "hotel-booking-app-57568",
+    "storage_bucket": "hotel-booking-app-57568.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:141793310209:android:785bea814eb667da4db200",
+        "android_client_info": {
+          "package_name": "com.example.roomify"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "141793310209-5a2fk8nqpbl8rs33s34mancckv0oc1r2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC5eeNrpSjHcsc51v2ytGhu-GWziAa5BJM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "141793310209-5a2fk8nqpbl8rs33s34mancckv0oc1r2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
