@@ -8,6 +8,8 @@ import 'data/models/user_model.dart';
 import 'data/repositories/auth_repository.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/onboarding/onboarding_screen.dart';
+import 'screens/home/home_screen.dart';
+import 'screens/wishlist/wishlist_screen.dart';
 import 'screens/profile/profile_screen.dart';
 
 void main() async {
@@ -22,7 +24,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Discover',
+      title: 'Roomify',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primary),
@@ -116,9 +118,12 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  final _authRepo = AuthRepository();
+
   int _currentIndex = 0;
   UserModel? _user;
   bool _isLoading = true;
+  String? _errorMessage;
 
   @override
   void initState() {
@@ -127,46 +132,77 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Future<void> _loadUser() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
     try {
-      final user = await AuthRepository().getCurrentUser();
-      if (mounted) setState(() => _user = user);
-    } catch (_) {
-      // user null → AuthWrapper sẽ xử lý
+      final user = await _authRepo.getCurrentUser();
+      setState(() => _user = user);
+    } catch (e) {
+      setState(() => _errorMessage = 'Không thể tải thông tin người dùng.');
     } finally {
-      if (mounted) setState(() => _isLoading = false);
+      setState(() => _isLoading = false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+
+    if (_errorMessage != null || _user == null) {
+      return Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                _errorMessage ?? 'Không tìm thấy người dùng.',
+                style: const TextStyle(color: Colors.grey),
+              ),
+              const SizedBox(height: 12),
+              ElevatedButton(
+                onPressed: _loadUser,
+                child: const Text('Thử lại'),
+              ),
+            ],
+          ),
+        ),
       );
     }
 
-    final user = _user;
+    final user = _user!;
 
     return Scaffold(
-      body: IndexedStack(
-        index: _currentIndex,
-        children: [
-          const Center(child: Text('HomeScreen — chờ implement')),
-          user != null
-              ? ProfileScreen(user: user)
-              : const Center(child: CircularProgressIndicator()),
-        ],
-      ),
+      body: [
+        HomeScreen(user: user),
+        WishListScreen(user: user),
+        const Center(child: Text('NotificationsScreen — chờ implement')),
+        ProfileScreen(user: user),
+      ][_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) => setState(() => _currentIndex = index),
         selectedItemColor: AppColors.primary,
         unselectedItemColor: Colors.black45,
+        type: BottomNavigationBarType.fixed,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home_outlined),
             activeIcon: Icon(Icons.home),
             label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.favorite_outline),
+            activeIcon: Icon(Icons.favorite),
+            label: 'Wishlist',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.notifications_outlined),
+            activeIcon: Icon(Icons.notifications),
+            label: 'Noitification',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person_outline),
