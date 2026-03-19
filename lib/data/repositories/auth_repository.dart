@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import '../models/user_model.dart';
 
 class AuthRepository {
@@ -20,6 +21,43 @@ class AuthRepository {
       throw Exception(_authErrorMessage(e.code));
     } catch (e) {
       throw Exception('Đăng nhập thất bại. Vui lòng thử lại.');
+    }
+  }
+
+  // ─── Google Sign In ──────────────────────────────────────────────────────────
+  Future<UserModel?> signInWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      if (googleUser == null) return null;
+
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final OAuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      final userCredential = await _auth.signInWithCredential(credential);
+      final user = userCredential.user;
+
+      if (user != null) {
+        // Kiểm tra xem user đã tồn tại trong Firestore chưa
+        final userDoc = await _db.collection('users').doc(user.uid).get();
+        if (!userDoc.exists) {
+          // Nếu chưa, tạo document mới
+          final newUser = UserModel(
+            id: user.uid,
+            email: user.email ?? '',
+            fullName: user.displayName ?? 'Người dùng Google',
+            phone: user.phoneNumber ?? '',
+          );
+          await _db.collection('users').doc(user.uid).set(newUser.toMap());
+          return newUser;
+        }
+        return UserModel.fromMap(userDoc.data()!, user.uid);
+      }
+      return null;
+    } catch (e) {
+      throw Exception('Đăng nhập bằng Google thất bại: $e');
     }
   }
 
