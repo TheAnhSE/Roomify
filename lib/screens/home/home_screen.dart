@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../../core/constants/app_colors.dart';
 import '../../data/models/user_model.dart';
 import '../../data/models/destination_model.dart';
@@ -370,17 +371,26 @@ class _HomeScreenState extends State<HomeScreen> {
             // Image + wishlist button
             Stack(
               children: [
-                // TODO: thay bằng CachedNetworkImage(url: hotel.thumbnailUrl)
                 ClipRRect(
                   borderRadius: const BorderRadius.vertical(
                     top: Radius.circular(14),
                   ),
-                  child: Container(
+                  child: CachedNetworkImage(
+                    imageUrl: hotel.thumbnailUrl,
                     height: 236,
                     width: double.infinity,
-                    color: Colors.grey.shade300,
-                    child: const Center(
-                      child: Icon(Icons.hotel, color: Colors.white54, size: 32),
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => Container(
+                      color: Colors.grey.shade300,
+                      child: const Center(
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                    ),
+                    errorWidget: (context, url, error) => Container(
+                      color: Colors.grey.shade300,
+                      child: const Center(
+                        child: Icon(Icons.hotel, color: Colors.white54, size: 32),
+                      ),
                     ),
                   ),
                 ),
@@ -504,11 +514,20 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            // TODO: thay bằng CachedNetworkImage(url: destination.imageUrl)
-            Container(
-              color: Colors.grey.shade300,
-              child: const Center(
-                child: Icon(Icons.image, color: Colors.white54, size: 28),
+            CachedNetworkImage(
+              imageUrl: destination.imageUrl,
+              fit: BoxFit.cover,
+              placeholder: (context, url) => Container(
+                color: Colors.grey.shade300,
+                child: const Center(
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+              ),
+              errorWidget: (context, url, error) => Container(
+                color: Colors.grey.shade300,
+                child: const Center(
+                  child: Icon(Icons.image, color: Colors.white54, size: 28),
+                ),
               ),
             ),
 
@@ -592,20 +611,29 @@ class _HomeScreenState extends State<HomeScreen> {
             // Image + wishlist button
             Stack(
               children: [
-                // TODO: thay bằng CachedNetworkImage(url: hotel.thumbnailUrl)
                 ClipRRect(
                   borderRadius: const BorderRadius.vertical(
                     top: Radius.circular(14),
                   ),
-                  child: Container(
+                  child: CachedNetworkImage(
+                    imageUrl: hotel.thumbnailUrl,
                     height: 236,
                     width: double.infinity,
-                    color: Colors.grey.shade400,
-                    child: const Center(
-                      child: Icon(
-                        Icons.location_city,
-                        color: Colors.white54,
-                        size: 32,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => Container(
+                      color: Colors.grey.shade400,
+                      child: const Center(
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                    ),
+                    errorWidget: (context, url, error) => Container(
+                      color: Colors.grey.shade400,
+                      child: const Center(
+                        child: Icon(
+                          Icons.location_city,
+                          color: Colors.white54,
+                          size: 32,
+                        ),
                       ),
                     ),
                   ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/utils/currency_formatter.dart';
 import '../../data/models/user_model.dart';
@@ -131,18 +132,27 @@ class _WishListScreenState extends State<WishListScreen> {
               child: Row(
                 children: [
                   // ── Thumbnail w122 h150 ───────────────────────────────
-                  // TODO: thay bằng CachedNetworkImage(url: hotel.thumbnailUrl)
                   ClipRRect(
                     borderRadius: BorderRadius.circular(12),
-                    child: Container(
+                    child: CachedNetworkImage(
+                      imageUrl: hotel.thumbnailUrl,
+                      fit: BoxFit.cover,
                       width: 122,
                       height: 122,
-                      color: Colors.grey.shade300,
-                      child: const Center(
-                        child: Icon(
-                          Icons.hotel,
-                          color: Colors.white54,
-                          size: 32,
+                      placeholder: (context, url) => Container(
+                        color: Colors.grey.shade300,
+                        child: const Center(
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ),
+                      ),
+                      errorWidget: (context, url, error) => Container(
+                        color: Colors.grey.shade300,
+                        child: const Center(
+                          child: Icon(
+                            Icons.hotel,
+                            color: Colors.white54,
+                            size: 32,
+                          ),
                         ),
                       ),
                     ),
