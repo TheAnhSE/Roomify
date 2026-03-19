@@ -121,7 +121,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: const Text(
-                    'Mật khẩu',
+                    'Password',
                     style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
@@ -160,7 +160,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           builder: (_) => const ForgotPasswordScreen()),
                     ),
                     child: const Text(
-                      'Quên mật khẩu?',
+                      'Forgot password?',
                       style: TextStyle(
                         fontSize: 14,
                         color: AppColors.primary,
@@ -196,7 +196,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             height: 24,
                             child: CircularProgressIndicator(
                                 color: Colors.white, strokeWidth: 2.5))
-                        : const Text('Đăng nhập'),
+                        : const Text('Login'),
                   ),
                 ),
 
@@ -208,7 +208,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     Expanded(child: Divider(color: Color(0xFFEEEEEE), thickness: 1)),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16),
-                      child: Text('Hoặc đăng nhập với',
+                      child: Text('Or login with',
                           style:
                               TextStyle(fontSize: 13, color: Colors.black45)),
                     ),
@@ -229,7 +229,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text(
-                      "Chưa có tài khoản? ",
+                      "Doesn't have account on dicover? ",
                       style: TextStyle(fontSize: 14, color: Colors.black54),
                     ),
                     GestureDetector(
@@ -239,7 +239,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             builder: (_) => const RegisterScreen()),
                       ),
                       child: const Text(
-                        'Đăng ký ngay',
+                        'Sign up now',
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,

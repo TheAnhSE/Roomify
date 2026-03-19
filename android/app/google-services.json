@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "141793310209-t28qoqdjbrjt0qb92go0f9nen7dtns1j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.roomify",
+            "certificate_hash": "d643ffaca5fae6500d63eb7ecc8bea4f8dbd37fe"
+          }
+        },
+        {
           "client_id": "141793310209-5a2fk8nqpbl8rs33s34mancckv0oc1r2.apps.googleusercontent.com",
           "client_type": 3
         }
