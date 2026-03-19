@@ -96,42 +96,42 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                 // ── Title ─────────────────────────────────────────────────────
                 const Text(
-                  'Create account',
+                  'Tạo tài khoản',
                   style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                       color: Colors.black),
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: 8),
                 const Text(
-                  'Get the best out of derleng by creating an account',
-                  style: TextStyle(fontSize: 13, color: Colors.black54),
+                  'Tham gia Discover để trải nghiệm những dịch vụ du lịch tốt nhất',
+                  style: TextStyle(fontSize: 14, color: Colors.black54),
                 ),
 
                 const SizedBox(height: 24),
 
                 // ── First name ────────────────────────────────────────────────
-                _label('First name'),
+                _label('Họ'),
                 const SizedBox(height: 8),
-                _field(_firstNameCtrl, 'John',
+                _field(_firstNameCtrl, 'Nguyễn',
                     validator: (v) => (v == null || v.isEmpty)
-                        ? 'Nhập họ'
+                        ? 'Nhập họ của bạn'
                         : null),
 
                 const SizedBox(height: 16),
 
                 // ── Last name ─────────────────────────────────────────────────
-                _label('Last name'),
+                _label('Tên'),
                 const SizedBox(height: 8),
-                _field(_lastNameCtrl, 'Doe',
+                _field(_lastNameCtrl, 'Văn A',
                     validator: (v) => (v == null || v.isEmpty)
-                        ? 'Nhập tên'
+                        ? 'Nhập tên của bạn'
                         : null),
 
                 const SizedBox(height: 16),
 
                 // ── Phone ─────────────────────────────────────────────────────
-                _label('Phone'),
+                _label('Số điện thoại'),
                 const SizedBox(height: 8),
                 Row(
                   children: [
@@ -146,7 +146,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: const [
-                          Text('+855',
+                          Text('+84',
                               style: TextStyle(
                                   fontSize: 14, fontWeight: FontWeight.w500)),
                           SizedBox(width: 4),
@@ -164,7 +164,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           FilteringTextInputFormatter.digitsOnly
                         ],
                         decoration:
-                            _inputDecoration('123 456 789'),
+                            _inputDecoration('090 123 4567'),
                         validator: (v) =>
                             (v == null || v.isEmpty) ? 'Nhập số điện thoại' : null,
                       ),
@@ -175,9 +175,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 const SizedBox(height: 16),
 
                 // ── Age ───────────────────────────────────────────────────────
-                _label('Age'),
+                _label('Tuổi'),
                 const SizedBox(height: 8),
-                _field(_ageCtrl, '30',
+                _field(_ageCtrl, '25',
                     keyboardType: TextInputType.number,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     validator: (v) =>
@@ -196,7 +196,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 const SizedBox(height: 16),
 
                 // ── Password ──────────────────────────────────────────────────
-                _label('Password'),
+                _label('Mật khẩu'),
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: _passwordCtrl,
@@ -240,7 +240,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     GestureDetector(
                       onTap: () => setState(() => _acceptTerms = !_acceptTerms),
                       child: const Text(
-                        'I accept term and condition',
+                        'Tôi đồng ý với các điều khoản sử dụng',
                         style: TextStyle(
                           fontSize: 13,
                           color: Colors.black87,
@@ -273,7 +273,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             height: 22,
                             child: CircularProgressIndicator(
                                 color: Colors.white, strokeWidth: 2.5))
-                        : const Text('Create Account'),
+                        : const Text('Tạo tài khoản'),
                   ),
                 ),
 
@@ -285,7 +285,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       const Text(
-                        'Already have an account? ',
+                        'Đã có tài khoản? ',
                         style: TextStyle(fontSize: 13, color: Colors.black54),
                       ),
                       GestureDetector(
@@ -295,7 +295,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               builder: (_) => const LoginScreen()),
                         ),
                         child: const Text(
-                          'Go back',
+                          'Đăng nhập',
                           style: TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.bold,

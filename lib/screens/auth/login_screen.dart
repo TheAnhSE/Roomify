@@ -87,10 +87,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     color: Colors.black,
                   ),
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: 8),
                 const Text(
                   'Please choose your login option below',
-                  style: TextStyle(fontSize: 13, color: Colors.black54),
+                  style: TextStyle(fontSize: 14, color: Colors.black54),
                 ),
 
                 const SizedBox(height: 32),
@@ -101,8 +101,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: const Text(
                     'Email',
                     style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
                         color: Colors.black87),
                   ),
                 ),
@@ -115,16 +115,16 @@ class _LoginScreenState extends State<LoginScreen> {
                       (v == null || !v.contains('@')) ? 'Email không hợp lệ' : null,
                 ),
 
-                const SizedBox(height: 16),
+                const SizedBox(height: 20),
 
                 // ── Password ──────────────────────────────────────────────────
                 Align(
                   alignment: Alignment.centerLeft,
                   child: const Text(
-                    'Password',
+                    'Mật khẩu',
                     style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
                         color: Colors.black87),
                   ),
                 ),
@@ -148,7 +148,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       (v == null || v.length < 6) ? 'Mật khẩu tối thiểu 6 ký tự' : null,
                 ),
 
-                const SizedBox(height: 10),
+                const SizedBox(height: 12),
 
                 // ── Forgot password ───────────────────────────────────────────
                 Align(
@@ -160,9 +160,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           builder: (_) => const ForgotPasswordScreen()),
                     ),
                     child: const Text(
-                      'Forgot password?',
+                      'Quên mật khẩu?',
                       style: TextStyle(
-                        fontSize: 13,
+                        fontSize: 14,
                         color: AppColors.primary,
                         fontWeight: FontWeight.w500,
                         decoration: TextDecoration.underline,
@@ -172,70 +172,65 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
 
-                const SizedBox(height: 24),
+                const SizedBox(height: 32),
 
                 // ── Login button ──────────────────────────────────────────────
                 SizedBox(
                   width: double.infinity,
-                  height: 54,
+                  height: 56,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
                       foregroundColor: Colors.white,
+                      elevation: 2,
+                      shadowColor: AppColors.primary.withOpacity(0.5),
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14)),
+                          borderRadius: BorderRadius.circular(16)),
                       textStyle: const TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.w600),
+                          fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     onPressed: _isLoading ? null : _login,
                     child: _isLoading
                         ? const SizedBox(
-                            width: 22,
-                            height: 22,
+                            width: 24,
+                            height: 24,
                             child: CircularProgressIndicator(
                                 color: Colors.white, strokeWidth: 2.5))
-                        : const Text('Login'),
+                        : const Text('Đăng nhập'),
                   ),
                 ),
 
-                const SizedBox(height: 24),
+                const SizedBox(height: 28),
 
                 // ── Divider ───────────────────────────────────────────────────
                 Row(
                   children: const [
-                    Expanded(child: Divider(color: Color(0xFFE0E0E0))),
+                    Expanded(child: Divider(color: Color(0xFFEEEEEE), thickness: 1)),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 12),
-                      child: Text('Or login with',
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      child: Text('Hoặc đăng nhập với',
                           style:
                               TextStyle(fontSize: 13, color: Colors.black45)),
                     ),
-                    Expanded(child: Divider(color: Color(0xFFE0E0E0))),
+                    Expanded(child: Divider(color: Color(0xFFEEEEEE), thickness: 1)),
                   ],
                 ),
 
-                const SizedBox(height: 20),
+                const SizedBox(height: 24),
 
                 // ── Social buttons ────────────────────────────────────────────
-                Row(
-                  children: [
-                    Expanded(child: _socialBtn('Facebook', Icons.facebook, const Color(0xFF1877F2))),
-                    const SizedBox(width: 12),
-                    Expanded(child: _socialBtnImage('Gmail', 'https://www.google.com/favicon.ico')),
-                    const SizedBox(width: 12),
-                    Expanded(child: _socialBtn('Apple', Icons.apple, Colors.black)),
-                  ],
-                ),
+                // Chỉ giữ lại Google và làm cho nó nổi bật hơn
+                _googleLoginBtn(),
 
-                const SizedBox(height: 40),
+                const SizedBox(height: 48),
 
                 // ── Create account ────────────────────────────────────────────
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text(
-                      "Doesn't have account on dicover? ",
-                      style: TextStyle(fontSize: 13, color: Colors.black54),
+                      "Chưa có tài khoản? ",
+                      style: TextStyle(fontSize: 14, color: Colors.black54),
                     ),
                     GestureDetector(
                       onTap: () => Navigator.push(
@@ -244,11 +239,11 @@ class _LoginScreenState extends State<LoginScreen> {
                             builder: (_) => const RegisterScreen()),
                       ),
                       child: const Text(
-                        'Create Account',
+                        'Đăng ký ngay',
                         style: TextStyle(
-                          fontSize: 13,
+                          fontSize: 14,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black,
+                          color: AppColors.primary,
                         ),
                       ),
                     ),
@@ -264,80 +259,90 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  Future<void> _googleLogin() async {
+    setState(() => _isLoading = true);
+    try {
+      final user = await _auth.signInWithGoogle();
+      if (user != null && mounted) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (_) => const AuthWrapper()),
+          (route) => false,
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.toString()), backgroundColor: Colors.red),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
   InputDecoration _inputDecoration(String hint) {
     return InputDecoration(
       hintText: hint,
       hintStyle: const TextStyle(color: Colors.black38, fontSize: 14),
       filled: true,
-      fillColor: Colors.white,
+      fillColor: Colors.grey[50],
       contentPadding:
-          const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
       enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
-        borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
+        borderRadius: BorderRadius.circular(16),
+        borderSide: const BorderSide(color: Color(0xFFF0F0F0)),
       ),
       focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(16),
         borderSide: BorderSide(color: AppColors.primary, width: 1.5),
       ),
       errorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(16),
         borderSide: const BorderSide(color: Colors.red),
       ),
       focusedErrorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(16),
         borderSide: const BorderSide(color: Colors.red),
       ),
     );
   }
 
-  Widget _socialBtn(String label, IconData icon, Color iconColor) {
-    return OutlinedButton.icon(
-      style: OutlinedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        side: const BorderSide(color: Color(0xFFE0E0E0)),
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      ),
-      icon: Icon(icon, color: iconColor, size: 20),
-      label: Text(label,
-          style: const TextStyle(
-              fontSize: 13, color: Colors.black87, fontWeight: FontWeight.w500)),
-      onPressed: () {},
-    );
-  }
-  Widget _socialBtnImage(String label, String imageUrl) {
-    return OutlinedButton(
-      style: OutlinedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        side: const BorderSide(color: Color(0xFFE0E0E0)),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      ),
-      onPressed: () {},
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Image.network(
-            imageUrl,
-            width: 20,
-            height: 20,
-            errorBuilder: (_, __, ___) => const Icon(
-              Icons.g_mobiledata_rounded,
-              color: Color(0xFFEA4335),
-              size: 20,
+  Widget _googleLoginBtn() {
+    return SizedBox(
+      width: double.infinity,
+      height: 56,
+      child: OutlinedButton(
+        style: OutlinedButton.styleFrom(
+          side: const BorderSide(color: Color(0xFFEBEBEB)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          backgroundColor: Colors.white,
+        ),
+        onPressed: _isLoading ? null : _googleLogin,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.network(
+              'https://www.google.com/favicon.ico',
+              width: 20,
+              height: 20,
+              errorBuilder: (_, __, ___) => const Icon(
+                Icons.g_mobiledata_rounded,
+                color: Color(0xFFEA4335),
+                size: 24,
+              ),
             ),
-          ),
-          const SizedBox(width: 6),
-          const Text(
-            'Google',
-            style: TextStyle(
-              fontSize: 13,
-              color: Colors.black87,
-              fontWeight: FontWeight.w500,
+            const SizedBox(width: 12),
+            const Text(
+              'Tiếp tục với Google',
+              style: TextStyle(
+                fontSize: 15,
+                color: Colors.black87,
+                fontWeight: FontWeight.w600,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
