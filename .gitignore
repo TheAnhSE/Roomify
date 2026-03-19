@@ -46,3 +46,7 @@ app.*.map.json
 
 # Flutter generated
 .flutter-plugins
+
+# Release keystore — KHÔNG commit lên GitHub
+*.jks
+*.keystore

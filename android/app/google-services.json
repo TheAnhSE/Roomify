@@ -15,6 +15,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "141793310209-0bdrer0rgrjc9j54dhbs36a81s5r5umj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.roomify",
+            "certificate_hash": "78c18e66420bf7eb1203225d3b77b0f1efa807de"
+          }
+        },
+        {
+          "client_id": "141793310209-cogmqgk4t87hmd9rk7i0gldiomvto4eh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.roomify",
+            "certificate_hash": "075eb93fcfd3df15cbf8fc883806f112a6683a1b"
+          }
+        },
+        {
           "client_id": "141793310209-t28qoqdjbrjt0qb92go0f9nen7dtns1j.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
