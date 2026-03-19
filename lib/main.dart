@@ -4,8 +4,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
 import 'core/constants/app_colors.dart';
+import 'data/models/user_model.dart';
+import 'data/repositories/auth_repository.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/onboarding/onboarding_screen.dart';
+import 'screens/profile/profile_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -50,12 +53,8 @@ class _SplashScreenState extends State<SplashScreen> {
   Future<void> _checkOnboardingStatus() async {
     final prefs = await SharedPreferences.getInstance();
     final onboardingCompleted = prefs.getBool('onboarding_completed') ?? false;
-
-    // Chờ 2 giây splash
     await Future.delayed(const Duration(seconds: 2));
-
     if (!mounted) return;
-
     if (onboardingCompleted) {
       Navigator.pushReplacement(
         context,
@@ -85,7 +84,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 }
 
-// ─── Auth Wrapper (after onboarding) ─────────────────────────────────────────
+// ─── Auth Wrapper ─────────────────────────────────────────────────────────────
 class AuthWrapper extends StatelessWidget {
   const AuthWrapper({super.key});
 
@@ -108,7 +107,7 @@ class AuthWrapper extends StatelessWidget {
   }
 }
 
-// ─── Main Screen (placeholder) ────────────────────────────────────────────────
+// ─── Main Screen ─────────────────────────────────────────────────────────────
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
 
@@ -118,13 +117,46 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
+  UserModel? _user;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUser();
+  }
+
+  Future<void> _loadUser() async {
+    try {
+      final user = await AuthRepository().getCurrentUser();
+      if (mounted) setState(() => _user = user);
+    } catch (_) {
+      // user null → AuthWrapper sẽ xử lý
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    final user = _user;
+
     return Scaffold(
-      body: _currentIndex == 0
-          ? const Center(child: Text('HomeScreen — chờ implement'))
-          : const Center(child: Text('ProfileScreen — chờ implement')),
+      body: IndexedStack(
+        index: _currentIndex,
+        children: [
+          const Center(child: Text('HomeScreen — chờ implement')),
+          user != null
+              ? ProfileScreen(user: user)
+              : const Center(child: CircularProgressIndicator()),
+        ],
+      ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) => setState(() => _currentIndex = index),

@@ -1,11 +1,14 @@
+import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../models/user_model.dart';
 
 class AuthRepository {
   final _auth = FirebaseAuth.instance;
   final _db = FirebaseFirestore.instance;
+  final _storage = FirebaseStorage.instance;
 
   // ─── Login ──────────────────────────────────────────────────────────────────
   Future<UserModel?> login(String email, String password) async {
@@ -30,7 +33,8 @@ class AuthRepository {
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
       if (googleUser == null) return null;
 
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
       final OAuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
@@ -40,10 +44,8 @@ class AuthRepository {
       final user = userCredential.user;
 
       if (user != null) {
-        // Kiểm tra xem user đã tồn tại trong Firestore chưa
         final userDoc = await _db.collection('users').doc(user.uid).get();
         if (!userDoc.exists) {
-          // Nếu chưa, tạo document mới
           final newUser = UserModel(
             id: user.uid,
             email: user.email ?? '',
@@ -100,10 +102,9 @@ class AuthRepository {
     }
   }
 
-  // ─── Reset password (Firebase link) ─────────────────────────────────────────
+  // ─── Reset password ──────────────────────────────────────────────────────────
   Future<void> resetPassword(String email) async {
     try {
-      // 1. Kiểm tra xem email có tồn tại trong hệ thống (Firestore) không
       final users = await _db
           .collection('users')
           .where('email', isEqualTo: email)
@@ -114,15 +115,62 @@ class AuthRepository {
         throw Exception('Email này chưa được đăng ký trong hệ thống.');
       }
 
-      // 2. Nếu tồn tại, mới gọi Firebase gửi mail
       await _auth.sendPasswordResetEmail(email: email);
     } on FirebaseAuthException catch (e) {
-      print('DEBUG: Firebase Auth Error Code: ${e.code}');
       throw Exception(_authErrorMessage(e.code));
     } catch (e) {
-      print('DEBUG: General Reset Error: $e');
       if (e is Exception) rethrow;
       throw Exception('Gửi email đặt lại mật khẩu thất bại. Vui lòng thử lại.');
+    }
+  }
+
+  // ─── Upload avatar to Firebase Storage ───────────────────────────────────────
+  Future<String> uploadAvatar({
+    required String uid,
+    required File imageFile,
+  }) async {
+    try {
+      final ref = _storage.ref().child('avatars/$uid/avatar.jpg');
+      final snapshot = await ref.putFile(
+        imageFile,
+        SettableMetadata(contentType: 'image/jpeg'),
+      );
+      if (snapshot.state == TaskState.success) {
+        return await ref.getDownloadURL();
+      } else {
+        throw Exception('Upload không hoàn tất. Vui lòng thử lại.');
+      }
+    } on FirebaseException catch (e) {
+      throw Exception('Upload ảnh thất bại: ${e.message ?? "Vui lòng thử lại."}');
+    } catch (e) {
+      if (e is Exception) rethrow;
+      throw Exception('Không thể tải ảnh lên. Vui lòng thử lại.');
+    }
+  }
+
+  // ─── Update profile ──────────────────────────────────────────────────────────
+  Future<UserModel> updateProfile({
+    required String uid,
+    required String fullName,
+    required String phone,
+    String? photoUrl,
+  }) async {
+    try {
+      await _db.collection('users').doc(uid).update({
+        'fullName': fullName,
+        'phone': phone,
+        'photoUrl': photoUrl,
+      });
+      final updated = await _fetchUserDoc(uid);
+      if (updated == null) {
+        throw Exception('Không thể tải thông tin sau khi cập nhật.');
+      }
+      return updated;
+    } on FirebaseException catch (e) {
+      throw Exception('Cập nhật thất bại: ${e.message ?? "Vui lòng thử lại."}');
+    } catch (e) {
+      if (e is Exception) rethrow;
+      throw Exception('Cập nhật thông tin thất bại. Vui lòng thử lại.');
     }
   }
 
