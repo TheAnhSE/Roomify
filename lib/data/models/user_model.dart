@@ -3,12 +3,14 @@ class UserModel {
   final String email;
   final String fullName;
   final String phone;
+  final String? photoUrl; // URL ảnh đại diện từ Firebase Storage (nullable)
 
   UserModel({
     required this.id,
     required this.email,
     required this.fullName,
     required this.phone,
+    this.photoUrl,
   });
 
   // First letter of fullName uppercased — used as avatar initials everywhere
@@ -20,11 +22,13 @@ class UserModel {
         email: map['email'] ?? '',
         fullName: map['fullName'] ?? '',
         phone: map['phone'] ?? '',
+        photoUrl: map['photoUrl'] as String?,
       );
 
   Map<String, dynamic> toMap() => {
         'email': email,
         'fullName': fullName,
         'phone': phone,
+        'photoUrl': photoUrl,
       };
 }

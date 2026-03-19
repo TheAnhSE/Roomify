@@ -55,12 +55,8 @@ class _SplashScreenState extends State<SplashScreen> {
   Future<void> _checkOnboardingStatus() async {
     final prefs = await SharedPreferences.getInstance();
     final onboardingCompleted = prefs.getBool('onboarding_completed') ?? false;
-
-    // Chờ 2 giây splash
     await Future.delayed(const Duration(seconds: 2));
-
     if (!mounted) return;
-
     if (onboardingCompleted) {
       Navigator.pushReplacement(
         context,
@@ -90,7 +86,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 }
 
-// ─── Auth Wrapper (after onboarding) ─────────────────────────────────────────
+// ─── Auth Wrapper ─────────────────────────────────────────────────────────────
 class AuthWrapper extends StatelessWidget {
   const AuthWrapper({super.key});
 
@@ -113,7 +109,7 @@ class AuthWrapper extends StatelessWidget {
   }
 }
 
-// ─── Main Screen (placeholder) ────────────────────────────────────────────────
+// ─── Main Screen ─────────────────────────────────────────────────────────────
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
 
