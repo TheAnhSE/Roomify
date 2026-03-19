@@ -23,7 +23,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   late final TextEditingController _fullNameCtrl;
   late final TextEditingController _phoneCtrl;
 
-  File? _pickedImage;      // ảnh vừa chọn từ thiết bị (chưa upload)
+  File? _pickedImage;
   bool _isUploadingAvatar = false;
   bool _isLoading = false;
 
@@ -41,12 +41,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     super.dispose();
   }
 
-  // ─── Chọn ảnh ────────────────────────────────────────────────────────────────
   Future<void> _pickImage(ImageSource source) async {
     try {
       final picked = await _picker.pickImage(
         source: source,
-        imageQuality: 80,   // nén còn 80% — giảm dung lượng upload
+        imageQuality: 80,
         maxWidth: 512,
         maxHeight: 512,
       );
@@ -56,7 +55,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Không thể chọn ảnh: $e'),
+            content: Text('Unable to pick image: $e'),
             backgroundColor: AppColors.error,
           ),
         );
@@ -64,7 +63,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     }
   }
 
-  // ─── Bottom sheet chọn nguồn ảnh ─────────────────────────────────────────────
   void _showImageSourceSheet() {
     showModalBottomSheet(
       context: context,
@@ -93,7 +91,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   child: Icon(Icons.photo_library_outlined,
                       color: AppColors.primary),
                 ),
-                title: const Text('Chọn từ thư viện ảnh'),
+                title: const Text('Choose from gallery'),
                 onTap: () {
                   Navigator.pop(ctx);
                   _pickImage(ImageSource.gallery);
@@ -105,26 +103,24 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   child: Icon(Icons.camera_alt_outlined,
                       color: AppColors.primary),
                 ),
-                title: const Text('Chụp ảnh mới'),
+                title: const Text('Take a new photo'),
                 onTap: () {
                   Navigator.pop(ctx);
                   _pickImage(ImageSource.camera);
                 },
               ),
-              // Chỉ hiện nút xoá nếu đã có ảnh (đã chọn hoặc có sẵn)
               if (_pickedImage != null || widget.user.photoUrl != null)
                 ListTile(
                   leading: const CircleAvatar(
                     backgroundColor: Color(0xFFFFF0F0),
                     child: Icon(Icons.delete_outline, color: AppColors.error),
                   ),
-                  title: const Text('Xoá ảnh đại diện',
+                  title: const Text('Remove profile photo',
                       style: TextStyle(color: AppColors.error)),
                   onTap: () {
                     Navigator.pop(ctx);
                     setState(() => _pickedImage = null);
-                    // TODO: nếu muốn xoá ảnh trên Firebase Storage,
-                    // cần thêm deleteAvatar() vào AuthRepository
+                    // TODO: add deleteAvatar() in AuthRepository if needed.
                   },
                 ),
             ],
@@ -134,7 +130,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     );
   }
 
-  // ─── Save ─────────────────────────────────────────────────────────────────────
   Future<void> _onSave() async {
     if (!_formKey.currentState!.validate()) return;
     if (_isLoading) return;
@@ -143,7 +138,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     try {
       String? photoUrl = widget.user.photoUrl;
 
-      // Upload ảnh mới nếu người dùng đã chọn
       if (_pickedImage != null) {
         setState(() => _isUploadingAvatar = true);
         photoUrl = await _authRepo.uploadAvatar(
@@ -163,7 +157,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Cập nhật thông tin thành công'),
+            content: Text('Profile updated successfully'),
             backgroundColor: Colors.green,
           ),
         );
@@ -184,7 +178,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     }
   }
 
-  // ─── Avatar widget (ưu tiên: ảnh mới chọn → URL cũ → initials) ───────────────
   Widget _buildAvatarSection() {
     return Center(
       child: GestureDetector(
@@ -304,7 +297,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       const SizedBox(height: 8),
                       const Center(
                         child: Text(
-                          'Nhấn vào ảnh để thay đổi',
+                          'Tap photo to change',
                           style: TextStyle(
                               fontSize: 12, color: Colors.black38),
                         ),
@@ -313,21 +306,21 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       const SizedBox(height: 32),
 
                       // ── Full name ────────────────────────────────────────────
-                      _label('Họ và tên'),
+                      _label('Full name'),
                       const SizedBox(height: 8),
                       TextFormField(
                         controller: _fullNameCtrl,
                         textCapitalization: TextCapitalization.words,
-                        decoration: _inputDecoration('Nguyễn Văn A'),
+                        decoration: _inputDecoration('John Doe'),
                         validator: (v) => (v == null || v.trim().isEmpty)
-                            ? 'Vui lòng nhập họ và tên'
+                            ? 'Please enter your full name'
                             : null,
                       ),
 
                       const SizedBox(height: 20),
 
                       // ── Phone ────────────────────────────────────────────────
-                      _label('Số điện thoại'),
+                      _label('Phone number'),
                       const SizedBox(height: 8),
                       TextFormField(
                         controller: _phoneCtrl,
@@ -337,7 +330,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ],
                         decoration: _inputDecoration('0901234567'),
                         validator: (v) => (v == null || v.trim().isEmpty)
-                            ? 'Vui lòng nhập số điện thoại'
+                            ? 'Please enter your phone number'
                             : null,
                       ),
 
@@ -362,7 +355,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       ),
                       const SizedBox(height: 6),
                       const Text(
-                        'Email không thể thay đổi',
+                        'Email cannot be changed',
                         style:
                             TextStyle(fontSize: 12, color: Colors.black38),
                       ),
@@ -390,7 +383,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   child: CircularProgressIndicator(
                                       color: Colors.white, strokeWidth: 2.5),
                                 )
-                              : const Text('Lưu thay đổi'),
+                              : const Text('Save changes'),
                         ),
                       ),
 

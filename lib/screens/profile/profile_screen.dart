@@ -53,17 +53,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Đăng xuất'),
-        content: const Text('Bạn có chắc muốn đăng xuất không?'),
+        title: const Text('Logout'),
+        content: const Text('Are you sure you want to log out?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Huỷ'),
+            child: const Text('Cancel'),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
             child: const Text(
-              'Đăng xuất',
+              'Logout',
               style: TextStyle(color: AppColors.error),
             ),
           ),
@@ -94,16 +94,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Huỷ đặt phòng'),
-        content: Text('Bạn có chắc muốn huỷ đặt phòng tại ${booking.hotelName} không?'),
+        title: const Text('Cancel booking'),
+        content: Text('Are you sure you want to cancel booking at ${booking.hotelName}?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Không'),
+            child: const Text('No'),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Huỷ đặt phòng',
+            child: const Text('Cancel booking',
                 style: TextStyle(color: AppColors.error)),
           ),
         ],
@@ -116,7 +116,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Đã huỷ đặt phòng thành công'),
+            content: Text('Booking cancelled successfully'),
             backgroundColor: Colors.green,
           ),
         );
@@ -258,7 +258,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           trailing: const Icon(Icons.chevron_right, color: Colors.black54),
           onTap: () {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Tính năng đang phát triển')),
+              const SnackBar(content: Text('This feature is under development')),
             );
           },
         ),
@@ -379,7 +379,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: Text('Lịch sử đặt phòng',
+                child: Text('Booking history',
                     style: TextStyle(
                         fontSize: 18, fontWeight: FontWeight.bold)),
               ),
@@ -415,7 +415,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Icon(Icons.hotel_outlined, size: 64, color: Colors.black12),
           SizedBox(height: 16),
           Text(
-            'Chưa có đặt phòng nào',
+            'No bookings yet',
             style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
@@ -423,7 +423,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           SizedBox(height: 8),
           Text(
-            'Hãy bắt đầu khám phá và đặt phòng\nchuyến đi đầu tiên của bạn!',
+            'Start exploring and book\nyour first trip!',
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 13, color: Colors.black38),
           ),
@@ -439,15 +439,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
     switch (booking.status) {
       case 'confirmed':
         statusColor = AppColors.statusConfirmed;
-        statusLabel = 'Đã xác nhận';
+        statusLabel = 'Confirmed';
         break;
       case 'cancelled':
         statusColor = AppColors.statusCancelled;
-        statusLabel = 'Đã huỷ';
+        statusLabel = 'Cancelled';
         break;
       default:
         statusColor = AppColors.statusCompleted;
-        statusLabel = 'Hoàn thành';
+        statusLabel = 'Completed';
     }
 
     return Container(
@@ -545,7 +545,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Navigator.pop(sheetCtx);
                   _onCancelBooking(booking);
                 },
-                child: const Text('Huỷ đặt phòng',
+                child: const Text('Cancel booking',
                     style: TextStyle(fontSize: 13)),
               ),
             ),

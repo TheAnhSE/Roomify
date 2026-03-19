@@ -9,17 +9,17 @@ import '../../data/repositories/auth_repository.dart';
 import '../../data/repositories/room_repository.dart';
 import '../booking/booking_form_screen.dart';
 
-// TODO (Người 4): Implement hotel detail screen theo Figma:
-//   - Detail.jpg → layout chính (image gallery, thông tin, tiện nghi, danh sách phòng)
+// TODO (Member 4): Implement hotel detail screen based on Figma:
+//   - Detail.jpg -> main layout (image gallery, info, amenities, room list)
 // - Required param: HotelModel hotel
-// - PageView của hotel.imageUrls — swipeable, có dot indicator
-// - Thông tin khách sạn: name, hàng sao (Icon), rating, address, checkIn/checkOut time
-// - Tiện nghi: Wrap của Chip widgets (hotel.amenities)
-// - Danh sách phòng: ListView của RoomCard (gọi RoomRepository.getAvailableRooms)
+// - PageView for hotel.imageUrls with dot indicator
+// - Hotel information: name, stars (Icon), rating, address, checkIn/checkOut time
+// - Amenities: Wrap of Chip widgets (hotel.amenities)
+// - Room list: ListView of RoomCard (call RoomRepository.getAvailableRooms)
 //     RoomCard: thumbnailUrl + roomType + roomNumber + CurrencyFormatter.format(pricePerNight) + capacity
-//     Nút "Đặt ngay" → BookingFormScreen(hotel: hotel, room: room, user: user)
-// - Mọi Firestore call phải có try/catch với error message tiếng Việt
-// - Phải có CircularProgressIndicator khi _isLoading == true
+//     "Book now" button -> BookingFormScreen(hotel: hotel, room: room, user: user)
+// - All Firestore calls must use try/catch
+// - Must show CircularProgressIndicator when _isLoading == true
 class HotelDetailScreen extends StatefulWidget {
   final HotelModel hotel;
   const HotelDetailScreen({super.key, required this.hotel});
@@ -38,6 +38,20 @@ class _HotelDetailScreenState extends State<HotelDetailScreen> {
   bool _isLoading = false;
   String? _errorMessage;
   int _currentImageIndex = 0;
+
+  double get _startingPrice {
+    if (_rooms.isEmpty) return 0;
+    return _rooms
+        .map((room) => room.pricePerNight)
+        .reduce((current, next) => current < next ? current : next);
+  }
+
+  String _formatFromPrice(double amount) {
+    final formatted = CurrencyFormatter.format(amount)
+        .replaceAll(' ₫', '')
+        .replaceAll('.', ',');
+    return '$formatted VND';
+  }
 
   @override
   void initState() {
@@ -79,7 +93,7 @@ class _HotelDetailScreenState extends State<HotelDetailScreen> {
     if (user == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Không tìm thấy thông tin người dùng. Vui lòng đăng nhập lại.'),
+          content: Text('User information not found. Please sign in again.'),
           backgroundColor: AppColors.error,
         ),
       );
@@ -97,11 +111,92 @@ class _HotelDetailScreenState extends State<HotelDetailScreen> {
     );
   }
 
+  void _openRoomsSheet() {
+    if (_rooms.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('No available rooms for booking right now.'),
+        ),
+      );
+      return;
+    }
+
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (sheetContext) {
+        return SizedBox(
+          height: MediaQuery.of(context).size.height * 0.86,
+          child: Column(
+            children: [
+              const SizedBox(height: 10),
+              Container(
+                width: 42,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: AppColors.surfaceDark,
+                  borderRadius: BorderRadius.circular(999),
+                ),
+              ),
+              const SizedBox(height: 14),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  children: [
+                    const Expanded(
+                      child: Text(
+                        'Choose a room',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      '${_rooms.length} rooms',
+                      style: const TextStyle(
+                        color: AppColors.textSecondary,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 12),
+              Expanded(
+                child: ListView.builder(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                  itemCount: _rooms.length,
+                  itemBuilder: (context, index) => _buildRoomCard(
+                    _rooms[index],
+                    isCompact: false,
+                    onBook: (room) {
+                      Navigator.pop(sheetContext);
+                      _onBookNow(room);
+                    },
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final hotel = widget.hotel;
     return Scaffold(
       backgroundColor: AppColors.background,
+      bottomNavigationBar: _isLoading || _errorMessage != null
+          ? null
+          : _buildBottomBookBar(),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _errorMessage != null
@@ -114,8 +209,7 @@ class _HotelDetailScreenState extends State<HotelDetailScreen> {
                         SliverToBoxAdapter(child: _buildImageGallery(hotel)),
                         SliverToBoxAdapter(child: _buildHotelInfo(hotel)),
                         SliverToBoxAdapter(child: _buildAmenities(hotel)),
-                        SliverToBoxAdapter(child: _buildRoomsSection()),
-                        const SliverToBoxAdapter(child: SizedBox(height: 24)),
+                        const SliverToBoxAdapter(child: SizedBox(height: 110)),
                       ],
                     ),
                   ),
@@ -294,7 +388,7 @@ class _HotelDetailScreenState extends State<HotelDetailScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Tiện nghi',
+            'Amenities',
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -302,70 +396,77 @@ class _HotelDetailScreenState extends State<HotelDetailScreen> {
             ),
           ),
           const SizedBox(height: 10),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: hotel.amenities.map((a) {
-              return Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                decoration: BoxDecoration(
-                  color: AppColors.surface,
-                  borderRadius: BorderRadius.circular(999),
-                  border: Border.all(color: AppColors.surfaceDark),
-                ),
-                child: Text(
-                  a,
+          GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: hotel.amenities.length,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              mainAxisSpacing: 10,
+              crossAxisSpacing: 10,
+              childAspectRatio: 2.25,
+            ),
+            itemBuilder: (context, index) {
+              final amenity = hotel.amenities[index];
+              final meta = _resolveAmenityMeta(amenity);
+              return _buildAmenityCard(meta);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAmenityCard(_AmenityMeta amenity) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.surfaceDark),
+      ),
+      child: Row(
+        children: [
+          Icon(amenity.icon, size: 22, color: AppColors.textPrimary),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  amenity.title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
-                    fontSize: 12,
-                    color: AppColors.textSecondary,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary,
                   ),
                 ),
-              );
-            }).toList(),
+                const SizedBox(height: 2),
+                Text(
+                  amenity.subtitle,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: 12,
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildRoomsSection() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Phòng còn trống',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: AppColors.textPrimary,
-            ),
-          ),
-          const SizedBox(height: 10),
-          if (_rooms.isEmpty)
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: AppColors.surface,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: const Text(
-                'Hiện chưa có phòng trống.',
-                style: TextStyle(color: AppColors.textSecondary),
-              ),
-            )
-          else
-            Column(
-              children: _rooms.map((room) => _buildRoomCard(room)).toList(),
-            ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildRoomCard(RoomModel room) {
+  Widget _buildRoomCard(
+    RoomModel room, {
+    required bool isCompact,
+    required ValueChanged<RoomModel> onBook,
+  }) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(12),
@@ -415,7 +516,7 @@ class _HotelDetailScreenState extends State<HotelDetailScreen> {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  'Sức chứa: ${room.capacity} người',
+                  'Capacity: ${room.capacity} guests',
                   style: const TextStyle(
                     color: AppColors.textSecondary,
                     fontSize: 12,
@@ -432,7 +533,8 @@ class _HotelDetailScreenState extends State<HotelDetailScreen> {
                 ),
                 const SizedBox(height: 8),
                 SizedBox(
-                  height: 34,
+                  height: isCompact ? 34 : 38,
+                  width: isCompact ? null : double.infinity,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
@@ -441,8 +543,8 @@ class _HotelDetailScreenState extends State<HotelDetailScreen> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    onPressed: () => _onBookNow(room),
-                    child: const Text('Đặt ngay'),
+                    onPressed: () => onBook(room),
+                    child: const Text('Book now'),
                   ),
                 ),
               ],
@@ -450,6 +552,160 @@ class _HotelDetailScreenState extends State<HotelDetailScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildBottomBookBar() {
+    final hasRooms = _rooms.isNotEmpty;
+    return SafeArea(
+      top: false,
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(16, 10, 16, 14),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Color(0x14000000),
+              blurRadius: 14,
+              offset: Offset(0, -4),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text(
+                    'From',
+                    style: TextStyle(
+                      color: AppColors.textSecondary,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    hasRooms ? _formatFromPrice(_startingPrice) : 'Sold out',
+                    style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.primary,
+                    ),
+                  ),
+                  const SizedBox(height: 1),
+                  const Text(
+                    'per night',
+                    style: TextStyle(
+                      color: AppColors.textSecondary,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: SizedBox(
+                height: 52,
+                child: ElevatedButton(
+                  onPressed: hasRooms ? _openRoomsSheet : null,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    foregroundColor: Colors.white,
+                    disabledBackgroundColor: AppColors.surfaceDark,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                  ),
+                  child: const Text(
+                    'Book Now',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  _AmenityMeta _resolveAmenityMeta(String rawAmenity) {
+    final amenity = rawAmenity.trim();
+    final lower = amenity.toLowerCase();
+
+    if (lower.contains('wifi')) {
+      return const _AmenityMeta(
+        icon: Icons.wifi,
+        title: 'Wi-Fi',
+        subtitle: 'Internet access',
+      );
+    }
+    if (lower.contains('spa') || lower.contains('wellness')) {
+      return const _AmenityMeta(
+        icon: Icons.spa_outlined,
+        title: 'Spa',
+        subtitle: 'Relaxation zone',
+      );
+    }
+    if (lower.contains('gym') || lower.contains('fitness')) {
+      return const _AmenityMeta(
+        icon: Icons.fitness_center,
+        title: 'Gym',
+        subtitle: 'Workout area',
+      );
+    }
+    if (lower.contains('restaurant') || lower.contains('nha hang')) {
+      return const _AmenityMeta(
+        icon: Icons.restaurant,
+        title: 'Restaurant',
+        subtitle: 'Dining service',
+      );
+    }
+    if (lower.contains('bar')) {
+      return const _AmenityMeta(
+        icon: Icons.local_bar,
+        title: 'Bar',
+        subtitle: 'Drinks and lounge',
+      );
+    }
+    if (lower.contains('airport') || lower.contains('san bay') || lower.contains('bus')) {
+      return const _AmenityMeta(
+        icon: Icons.directions_bus,
+        title: 'Transport',
+        subtitle: 'Pickup service',
+      );
+    }
+    if (lower.contains('parking') || lower.contains('do xe')) {
+      return const _AmenityMeta(
+        icon: Icons.local_parking,
+        title: 'Parking',
+        subtitle: 'Car park area',
+      );
+    }
+    if (lower.contains('trung tam') || lower.contains('shopping') || lower.contains('mall')) {
+      return const _AmenityMeta(
+        icon: Icons.store_mall_directory,
+        title: 'Shopping',
+        subtitle: 'Nearby mall',
+      );
+    }
+    if (lower.contains('ho boi') || lower.contains('pool')) {
+      return const _AmenityMeta(
+        icon: Icons.pool,
+        title: 'Pool',
+        subtitle: 'Outdoor area',
+      );
+    }
+
+    return _AmenityMeta(
+      icon: Icons.check_circle_outline,
+      title: amenity,
+      subtitle: 'Hotel service',
     );
   }
 
@@ -463,7 +719,7 @@ class _HotelDetailScreenState extends State<HotelDetailScreen> {
             const Icon(Icons.error_outline, size: 42, color: AppColors.error),
             const SizedBox(height: 10),
             Text(
-              _errorMessage ?? 'Đã xảy ra lỗi.',
+              _errorMessage ?? 'Something went wrong.',
               textAlign: TextAlign.center,
               style: const TextStyle(color: AppColors.textSecondary),
             ),
@@ -474,11 +730,23 @@ class _HotelDetailScreenState extends State<HotelDetailScreen> {
                 backgroundColor: AppColors.primary,
                 foregroundColor: Colors.white,
               ),
-              child: const Text('Thử lại'),
+              child: const Text('Retry'),
             ),
           ],
         ),
       ),
     );
   }
+}
+
+class _AmenityMeta {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+
+  const _AmenityMeta({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+  });
 }

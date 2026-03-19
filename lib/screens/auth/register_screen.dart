@@ -41,7 +41,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (!_acceptTerms) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-            content: Text('Vui lòng chấp nhận điều khoản sử dụng'),
+            content: Text('Please accept the terms of service'),
             backgroundColor: Colors.orange),
       );
       return;
@@ -96,7 +96,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                 // ── Title ─────────────────────────────────────────────────────
                 const Text(
-                  'Tạo tài khoản',
+                  'Create account',
                   style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -104,34 +104,34 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 const SizedBox(height: 8),
                 const Text(
-                  'Tham gia Discover để trải nghiệm những dịch vụ du lịch tốt nhất',
+                  'Join Discover to experience the best travel services',
                   style: TextStyle(fontSize: 14, color: Colors.black54),
                 ),
 
                 const SizedBox(height: 24),
 
                 // ── First name ────────────────────────────────────────────────
-                _label('Họ'),
+                _label('First name'),
                 const SizedBox(height: 8),
-                _field(_firstNameCtrl, 'Nguyễn',
+                _field(_firstNameCtrl, 'John',
                     validator: (v) => (v == null || v.isEmpty)
-                        ? 'Nhập họ của bạn'
+                        ? 'Enter your first name'
                         : null),
 
                 const SizedBox(height: 16),
 
                 // ── Last name ─────────────────────────────────────────────────
-                _label('Tên'),
+                _label('Last name'),
                 const SizedBox(height: 8),
-                _field(_lastNameCtrl, 'Văn A',
+                _field(_lastNameCtrl, 'Doe',
                     validator: (v) => (v == null || v.isEmpty)
-                        ? 'Nhập tên của bạn'
+                        ? 'Enter your last name'
                         : null),
 
                 const SizedBox(height: 16),
 
                 // ── Phone ─────────────────────────────────────────────────────
-                _label('Số điện thoại'),
+                _label('Phone number'),
                 const SizedBox(height: 8),
                 Row(
                   children: [
@@ -166,7 +166,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         decoration:
                             _inputDecoration('090 123 4567'),
                         validator: (v) =>
-                            (v == null || v.isEmpty) ? 'Nhập số điện thoại' : null,
+                            (v == null || v.isEmpty) ? 'Enter your phone number' : null,
                       ),
                     ),
                   ],
@@ -175,13 +175,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 const SizedBox(height: 16),
 
                 // ── Age ───────────────────────────────────────────────────────
-                _label('Tuổi'),
+                _label('Age'),
                 const SizedBox(height: 8),
                 _field(_ageCtrl, '25',
                     keyboardType: TextInputType.number,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     validator: (v) =>
-                        (v == null || v.isEmpty) ? 'Nhập tuổi' : null),
+                        (v == null || v.isEmpty) ? 'Enter your age' : null),
 
                 const SizedBox(height: 16),
 
@@ -191,12 +191,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 _field(_emailCtrl, 'jonhn.ux@gmail.com',
                     keyboardType: TextInputType.emailAddress,
                     validator: (v) =>
-                        (v == null || !v.contains('@')) ? 'Email không hợp lệ' : null),
+                        (v == null || !v.contains('@')) ? 'Invalid email' : null),
 
                 const SizedBox(height: 16),
 
                 // ── Password ──────────────────────────────────────────────────
-                _label('Mật khẩu'),
+                _label('Password'),
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: _passwordCtrl,
@@ -214,7 +214,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
                   validator: (v) =>
-                      (v == null || v.length < 6) ? 'Mật khẩu tối thiểu 6 ký tự' : null,
+                      (v == null || v.length < 6) ? 'Password must be at least 6 characters' : null,
                 ),
 
                 const SizedBox(height: 20),
@@ -240,7 +240,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     GestureDetector(
                       onTap: () => setState(() => _acceptTerms = !_acceptTerms),
                       child: const Text(
-                        'Tôi đồng ý với các điều khoản sử dụng',
+                        'I agree to the terms of service',
                         style: TextStyle(
                           fontSize: 13,
                           color: Colors.black87,
@@ -273,7 +273,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             height: 22,
                             child: CircularProgressIndicator(
                                 color: Colors.white, strokeWidth: 2.5))
-                        : const Text('Tạo tài khoản'),
+                        : const Text('Create account'),
                   ),
                 ),
 
@@ -285,7 +285,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       const Text(
-                        'Đã có tài khoản? ',
+                        'Already have an account? ',
                         style: TextStyle(fontSize: 13, color: Colors.black54),
                       ),
                       GestureDetector(
@@ -295,7 +295,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               builder: (_) => const LoginScreen()),
                         ),
                         child: const Text(
-                          'Đăng nhập',
+                          'Log in',
                           style: TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.bold,

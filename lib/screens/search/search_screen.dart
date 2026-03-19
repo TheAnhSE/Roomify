@@ -4,15 +4,15 @@ import '../../data/models/hotel_model.dart';
 import '../../data/repositories/destination_repository.dart';
 import '../../data/repositories/hotel_repository.dart';
 
-// TODO (Người 3): Implement search screen theo Figma:
-//   - Search.jpg → layout chính (search bar, filter dropdown, danh sách kết quả)
+// TODO (Member 3): Implement search screen based on Figma:
+//   - Search.jpg -> main layout (search bar, filter dropdown, result list)
 // - Optional params: String? city, String? query
-// - TextField với nút xoá (×)
-// - Dropdown filter: "Tất cả thành phố" + danh sách từ Firestore
-// - Kết quả: ListView của HotelCard
-// - Empty state: Center(child: Text("Không tìm thấy kết quả"))
-// - Mọi Firestore call phải có try/catch với error message tiếng Việt
-// - Phải có CircularProgressIndicator khi _isLoading == true
+// - TextField with clear button (x)
+// - Dropdown filter: "All cities" + city list from Firestore
+// - Results: ListView of HotelCard
+// - Empty state: Center(child: Text("No results found"))
+// - All Firestore calls must use try/catch
+// - Must show CircularProgressIndicator when _isLoading == true
 class SearchScreen extends StatefulWidget {
   final String? city;
   final String? query;
@@ -40,19 +40,19 @@ class _SearchScreenState extends State<SearchScreen> {
     super.dispose();
   }
 
-  // TODO: implement _search() và _loadDestinations() trong initState
+  // TODO: implement _search() and _loadDestinations() in initState
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBar(title: const Text('Tìm kiếm')),
+      appBar: AppBar(title: const Text('Search')),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : Center(
               child: Text(_selectedCity != null
-                  ? 'SearchScreen (${_selectedCity!}) — Người 3 implement'
-                  : 'SearchScreen — Người 3 implement'),
+                  ? 'SearchScreen (${_selectedCity!}) - Member 3 implement'
+                  : 'SearchScreen - Member 3 implement'),
             ),
     );
   }

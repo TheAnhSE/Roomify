@@ -154,10 +154,10 @@ class _CreateNewPasswordScreenState extends State<CreateNewPasswordScreen> {
                     ),
                   ),
                   validator: (v) {
-                    if (v == null || v.isEmpty) return 'Nhập mật khẩu';
-                    if (v.length < 6) return 'Tối thiểu 6 ký tự';
+                    if (v == null || v.isEmpty) return 'Enter password';
+                    if (v.length < 6) return 'At least 6 characters';
                     if (!v.contains(RegExp(r'[A-Z]')))
-                      return 'Cần ít nhất 1 chữ hoa';
+                      return 'Must contain at least 1 uppercase letter';
                     return null;
                   },
                 ),

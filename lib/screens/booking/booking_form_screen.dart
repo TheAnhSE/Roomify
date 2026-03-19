@@ -5,21 +5,21 @@ import '../../data/models/room_model.dart';
 import '../../data/models/user_model.dart';
 import '../../data/repositories/booking_repository.dart';
 
-// TODO (Người 4): Implement booking form screen theo Figma:
-//   - Booking Date.jpg → date range picker + summary card
-//   - Payment1.jpg     → guest info form + nút xác nhận
+// TODO (Member 4): Implement booking form screen based on Figma:
+//   - Booking Date.jpg -> date range picker + summary card
+//   - Payment1.jpg     -> guest info form + confirm button
 // - Required params: HotelModel hotel, RoomModel room, UserModel user
-// - Date selection: showDateRangePicker cho checkIn / checkOut
-//     firstDate: DateTime.now() — không cho chọn ngày trong quá khứ
-//     Validate: checkOut phải sau checkIn, tối đa 30 đêm
-//     Nếu không hợp lệ → show SnackBar "Ngày không hợp lệ"
-// - Guest form: firstName, lastName, phone, email — bắt buộc hết
+// - Date selection: showDateRangePicker for checkIn/checkOut
+//     firstDate: DateTime.now() - no past date
+//     Validate: checkOut must be after checkIn, max 30 nights
+//     Invalid -> show SnackBar "Invalid date"
+// - Guest form: firstName, lastName, phone, email - all required
 // - Summary card: roomName + numberOfNights + CurrencyFormatter.format(totalPrice)
-// - Nút "Xác nhận đặt phòng":
+// - "Confirm booking" button:
 //     Guard double-tap: if (_isLoading) return;
 //     Show CircularProgressIndicator khi _isLoading == true
-//     Thành công → BookingConfirmationScreen(booking: result)
-//     Lỗi → show SnackBar với error message tiếng Việt
+//     Success -> BookingConfirmationScreen(booking: result)
+//     Error -> show SnackBar with message
 class BookingFormScreen extends StatefulWidget {
   final HotelModel hotel;
   final RoomModel room;
@@ -66,18 +66,18 @@ class _BookingFormScreenState extends State<BookingFormScreen> {
     super.dispose();
   }
 
-  // TODO: implement _onConfirm() — dùng _isValidDateRange trước khi gọi BookingRepository
+  // TODO: implement _onConfirm() and validate date range first
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBar(title: const Text('Đặt phòng')),
+      appBar: AppBar(title: const Text('Book room')),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : Center(
               child: Text(
-                  'BookingFormScreen\n${widget.hotel.name} — ${widget.room.roomType}\nNgười 4 implement',
+                  'BookingFormScreen\n${widget.hotel.name} - ${widget.room.roomType}\nMember 4 implement',
                   textAlign: TextAlign.center),
             ),
     );

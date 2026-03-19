@@ -16,7 +16,7 @@ class RegisterSuccessScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Logo (hiển thị ảnh gốc trên nền xanh)
+                // Logo (show original image on blue background)
                 Image.asset(
                   'assets/images/logo.jpg',
                   width: 100,

@@ -112,7 +112,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   keyboardType: TextInputType.emailAddress,
                   decoration: _inputDecoration('Enter your  email address'),
                   validator: (v) =>
-                      (v == null || !v.contains('@')) ? 'Email không hợp lệ' : null,
+                      (v == null || !v.contains('@')) ? 'Invalid email' : null,
                 ),
 
                 const SizedBox(height: 20),
@@ -145,7 +145,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   validator: (v) =>
-                      (v == null || v.length < 6) ? 'Mật khẩu tối thiểu 6 ký tự' : null,
+                      (v == null || v.length < 6) ? 'Password must be at least 6 characters' : null,
                 ),
 
                 const SizedBox(height: 12),
@@ -219,7 +219,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 24),
 
                 // ── Social buttons ────────────────────────────────────────────
-                // Chỉ giữ lại Google và làm cho nó nổi bật hơn
+                // Keep Google only and make it more prominent
                 _googleLoginBtn(),
 
                 const SizedBox(height: 48),
@@ -334,7 +334,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             const SizedBox(width: 12),
             const Text(
-              'Tiếp tục với Google',
+              'Continue with Google',
               style: TextStyle(
                 fontSize: 15,
                 color: Colors.black87,

@@ -68,7 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
         );
       }
       setState(() {
-        _errorMessage = 'Không thể tải dữ liệu. Vui lòng thử lại.';
+        _errorMessage = 'Unable to load data. Please try again.';
       });
     } finally {
       setState(() => _isLoading = false);
@@ -132,7 +132,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Stack(
       children: [
         // Background image placeholder
-        // TODO: thay bằng CachedNetworkImage khi có ảnh banner
+        // TODO: replace with CachedNetworkImage when banner image is available
         Container(
           height: 381,
           width: double.infinity,
@@ -169,7 +169,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // AppBar row— logo trái + avatar phải
+                // AppBar row - logo on left + avatar on right
                 const Spacer(),
 
                 // Hero title + search + filter
@@ -207,7 +207,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       const SizedBox(height: 16),
 
-                      // Search bar — sync border style với Login
+                      // Search bar - sync border style with Login
                       TextField(
                         controller: _searchController,
                         textInputAction: TextInputAction.search,
@@ -329,7 +329,7 @@ class _HomeScreenState extends State<HomeScreen> {
       return const Padding(
         padding: EdgeInsets.symmetric(horizontal: 16),
         child: Text(
-          'Chưa có dữ liệu.',
+          'No data available.',
           style: TextStyle(color: AppColors.textSecondary),
         ),
       );
@@ -485,7 +485,7 @@ class _HomeScreenState extends State<HomeScreen> {
       return const Padding(
         padding: EdgeInsets.symmetric(horizontal: 16),
         child: Text(
-          'Chưa có địa danh nào.',
+          'No destinations available.',
           style: TextStyle(color: AppColors.textSecondary),
         ),
       );
@@ -531,7 +531,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
 
-            // Gradient chỉ ở phần bottom
+            // Gradient only at the bottom
             Positioned(
               bottom: 0,
               left: 0,
@@ -755,7 +755,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               onPressed: _loadData,
-              child: const Text('Thử lại'),
+              child: const Text('Retry'),
             ),
           ],
         ),

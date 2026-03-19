@@ -140,7 +140,7 @@ class _MainScreenState extends State<MainScreen> {
       final user = await _authRepo.getCurrentUser();
       setState(() => _user = user);
     } catch (e) {
-      setState(() => _errorMessage = 'Không thể tải thông tin người dùng.');
+      setState(() => _errorMessage = 'Unable to load user information.');
     } finally {
       setState(() => _isLoading = false);
     }
@@ -159,13 +159,13 @@ class _MainScreenState extends State<MainScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                _errorMessage ?? 'Không tìm thấy người dùng.',
+                _errorMessage ?? 'User not found.',
                 style: const TextStyle(color: Colors.grey),
               ),
               const SizedBox(height: 12),
               ElevatedButton(
                 onPressed: _loadUser,
-                child: const Text('Thử lại'),
+                child: const Text('Retry'),
               ),
             ],
           ),
@@ -179,7 +179,7 @@ class _MainScreenState extends State<MainScreen> {
       body: [
         HomeScreen(user: user),
         WishListScreen(user: user),
-        const Center(child: Text('NotificationsScreen — chờ implement')),
+        const Center(child: Text('NotificationsScreen - pending implementation')),
         ProfileScreen(user: user),
       ][_currentIndex],
       bottomNavigationBar: BottomNavigationBar(

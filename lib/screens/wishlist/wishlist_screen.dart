@@ -43,7 +43,7 @@ class _WishListScreenState extends State<WishListScreen> {
         );
       }
       setState(() {
-        _errorMessage = 'Không thể tải danh sách. Vui lòng thử lại.';
+        _errorMessage = 'Unable to load the list. Please try again.';
       });
     } finally {
       setState(() => _isLoading = false);
@@ -71,7 +71,7 @@ class _WishListScreenState extends State<WishListScreen> {
                         ? const SliverFillRemaining(
                             child: Center(
                               child: Text(
-                                'Chưa có khách sạn nào.',
+                                'No hotels yet.',
                                 style: TextStyle(
                                   fontSize: 13,
                                   color: AppColors.textSecondary,
@@ -123,7 +123,7 @@ class _WishListScreenState extends State<WishListScreen> {
             context,
             MaterialPageRoute(builder: (_) => HotelDetailScreen(hotel: hotel)),
           ),
-          // Khung ngoài: w355 h150
+          // Outer frame: w355 h150
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: SizedBox(
@@ -160,7 +160,7 @@ class _WishListScreenState extends State<WishListScreen> {
 
                   const SizedBox(width: 10),
 
-                  // ── Info: w203 h134, căn giữa dọc trong h150 ─────────
+                  // -- Info: w203 h134, vertically centered in h150 --
                   SizedBox(
                     width: 203,
                     height: 134,
@@ -280,7 +280,7 @@ class _WishListScreenState extends State<WishListScreen> {
           ),
         ),
 
-        // Divider — không hiện ở item cuối
+        // Divider - hidden for the last item
         if (!isLast)
           const Divider(
             height: 1,
@@ -325,7 +325,7 @@ class _WishListScreenState extends State<WishListScreen> {
                 ),
               ),
               onPressed: _loadData,
-              child: const Text('Thử lại'),
+              child: const Text('Retry'),
             ),
           ],
         ),

@@ -29,21 +29,21 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       await _auth.resetPassword(email);
       if (!mounted) return;
       
-      // Hiển thị thông báo thành công thay vì chuyển sang màn OTP
+      // Show success dialog instead of navigating to OTP screen
       showDialog(
         context: context,
         barrierDismissible: false,
         builder: (context) => AlertDialog(
-          title: const Text('Thành công'),
+          title: const Text('Success'),
           content: Text(
-              'Một liên kết đặt lại mật khẩu đã được gửi đến email $email. Vui lòng kiểm tra hộp thư của bạn.'),
+              'A password reset link has been sent to $email. Please check your inbox.'),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.pop(context); // Close dialog
                 Navigator.pop(context); // Go back to login
               },
-              child: const Text('Quay lại Đăng nhập'),
+              child: const Text('Back to Login'),
             ),
           ],
         ),
@@ -102,7 +102,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 ),
                 const SizedBox(height: 10),
                 const Text(
-                  'Nhập email của bạn, chúng tôi sẽ gửi liên kết để đặt lại mật khẩu mới.',
+                  'Enter your email and we will send a link to reset your password.',
                   style: TextStyle(
                       fontSize: 13, color: Colors.black54, height: 1.5),
                 ),
@@ -140,7 +140,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     ),
                   ),
                   validator: (v) =>
-                      (v == null || !v.contains('@')) ? 'Email không hợp lệ' : null,
+                      (v == null || !v.contains('@')) ? 'Invalid email' : null,
                 ),
 
                 const SizedBox(height: 32),
