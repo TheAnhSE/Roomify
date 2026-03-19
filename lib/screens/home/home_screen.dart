@@ -133,7 +133,7 @@ class _HomeScreenState extends State<HomeScreen> {
         // Background image placeholder
         // TODO: thay bằng CachedNetworkImage khi có ảnh banner
         Container(
-          height: 320,
+          height: 381,
           width: double.infinity,
           decoration: const BoxDecoration(
             gradient: LinearGradient(
@@ -147,7 +147,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
         // Dark overlay gradient
         Container(
-          height: 320,
+          height: 381,
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topCenter,
@@ -162,7 +162,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
         // Content on top of banner
         SizedBox(
-          height: 320,
+          height: 381,
           child: SafeArea(
             bottom: false,
             child: Column(
@@ -173,7 +173,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                 // Hero title + search + filter
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 30),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -204,7 +204,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 6),
+                      const SizedBox(height: 16),
 
                       // Search bar — sync border style với Login
                       TextField(
@@ -242,11 +242,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 26),
 
                       // Filter
                       SizedBox(
-                        height: 44,
+                        height: 52,
                         child: ListView.separated(
                           scrollDirection: Axis.horizontal,
                           itemCount: _filters.length,
@@ -259,10 +259,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   setState(() => _selectedFilter = index),
                               child: AnimatedContainer(
                                 duration: const Duration(milliseconds: 200),
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 14,
-                                  vertical: 10,
-                                ),
+                                width: 131,
+                                height: 52,
                                 decoration: BoxDecoration(
                                   color: Colors.white.withValues(
                                     alpha: selected ? 1.0 : 0.85,
@@ -271,6 +269,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Icon(
                                       _filterIcons[index],
@@ -293,7 +292,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           },
                         ),
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 16),
                     ],
                   ),
                 ),
@@ -335,7 +334,7 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     }
     return SizedBox(
-      height: 320,
+      height: 381,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -427,7 +426,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 16),
                   Row(
                     children: [
                       ...List.generate(
@@ -557,7 +556,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildTravelBeyond() {
     if (_hotels.isEmpty) return const SizedBox.shrink();
     return SizedBox(
-      height: 320,
+      height: 381,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 16),
