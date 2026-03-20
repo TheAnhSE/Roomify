@@ -6,6 +6,7 @@ import 'firebase_options.dart';
 import 'core/constants/app_colors.dart';
 import 'data/models/user_model.dart';
 import 'data/models/hotel_model.dart';
+import 'data/models/hotel_model.dart';
 import 'data/repositories/auth_repository.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/onboarding/onboarding_screen.dart';
