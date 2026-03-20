@@ -3,16 +3,26 @@ import '../../core/constants/app_colors.dart';
 import '../../core/utils/date_formatter.dart';
 import '../../core/utils/currency_formatter.dart';
 import '../../data/models/booking_model.dart';
+import '../../data/models/hotel_model.dart';
 import '../../data/models/user_model.dart';
 import '../../data/repositories/auth_repository.dart';
 import '../../data/repositories/booking_repository.dart';
 import '../../widgets/avatar_widget.dart';
 import '../../main.dart';
+import '../wishlist/wishlist_screen.dart';
 import 'edit_profile_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   final UserModel user;
-  const ProfileScreen({super.key, required this.user});
+  final Set<String> wishlistIds;
+  final List<HotelModel> allHotels;
+
+  const ProfileScreen({
+    super.key,
+    required this.user,
+    required this.wishlistIds,
+    required this.allHotels,
+  });
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -22,6 +32,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final _authRepo = AuthRepository();
   final _bookingRepo = BookingRepository();
 
+  // ignore: prefer_final_fields
   bool _isLoading = false;
   List<BookingModel> _bookings = [];
   String? _errorMessage;
@@ -84,7 +95,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.toString()), backgroundColor: AppColors.error),
+          SnackBar(
+            content: Text(e.toString()),
+            backgroundColor: AppColors.error,
+          ),
         );
       }
     }
@@ -95,7 +109,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text('Cancel booking'),
-        content: Text('Are you sure you want to cancel booking at ${booking.hotelName}?'),
+        content: Text(
+          'Are you sure you want to cancel booking at ${booking.hotelName}?',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
@@ -103,8 +119,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Cancel booking',
-                style: TextStyle(color: AppColors.error)),
+            child: const Text(
+              'Cancel booking',
+              style: TextStyle(color: AppColors.error),
+            ),
           ),
         ],
       ),
@@ -125,7 +143,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.toString()), backgroundColor: AppColors.error),
+          SnackBar(
+            content: Text(e.toString()),
+            backgroundColor: AppColors.error,
+          ),
         );
       }
     }
@@ -158,7 +179,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         final updated = await Navigator.push<UserModel>(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => EditProfileScreen(user: _currentUser),
+                            builder: (_) =>
+                                EditProfileScreen(user: _currentUser),
                           ),
                         );
                         if (updated != null && mounted) {
@@ -223,9 +245,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Text(
                   _currentUser.fullName,
                   style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black),
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
                 ),
                 const SizedBox(height: 4),
                 Text(
@@ -246,21 +269,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
       children: [
         ListTile(
           contentPadding: const EdgeInsets.symmetric(horizontal: 24),
-          title: const Text('Booking',
-              style: TextStyle(fontSize: 15, color: Colors.black87)),
+          title: const Text(
+            'Booking',
+            style: TextStyle(fontSize: 15, color: Colors.black87),
+          ),
           trailing: const Icon(Icons.chevron_right, color: Colors.black54),
           onTap: _showBookingHistory,
         ),
         ListTile(
           contentPadding: const EdgeInsets.symmetric(horizontal: 24),
-          title: const Text('Wishlist',
-              style: TextStyle(fontSize: 15, color: Colors.black87)),
+          title: const Text(
+            'Wishlist',
+            style: TextStyle(fontSize: 15, color: Colors.black87),
+          ),
           trailing: const Icon(Icons.chevron_right, color: Colors.black54),
-          onTap: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('This feature is under development')),
-            );
-          },
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => WishListScreen(
+                user: widget.user,
+                wishlistIds: widget.wishlistIds,
+                allHotels: widget.allHotels,
+              ),
+            ),
+          ),
         ),
       ],
     );
@@ -270,9 +302,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _buildSectionTitle(String title) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
-      child: Text(title,
-          style: const TextStyle(
-              fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black)),
+      child: Text(
+        title,
+        style: const TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          color: Colors.black,
+        ),
+      ),
     );
   }
 
@@ -302,9 +339,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Icon(icon, size: 20, color: Colors.black87),
                 const SizedBox(width: 14),
                 Expanded(
-                  child: Text(label,
-                      style: const TextStyle(
-                          fontSize: 14, color: Colors.black87)),
+                  child: Text(
+                    label,
+                    style: const TextStyle(fontSize: 14, color: Colors.black87),
+                  ),
                 ),
                 Icon(trailing, size: 18, color: Colors.black45),
               ],
@@ -379,26 +417,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: Text('Booking history',
-                    style: TextStyle(
-                        fontSize: 18, fontWeight: FontWeight.bold)),
+                child: Text(
+                  'Booking history',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
               ),
             ),
             const SizedBox(height: 12),
             Expanded(
               child: _errorMessage != null
                   ? Center(
-                      child: Text(_errorMessage!,
-                          style: const TextStyle(color: AppColors.error)))
+                      child: Text(
+                        _errorMessage!,
+                        style: const TextStyle(color: AppColors.error),
+                      ),
+                    )
                   : _bookings.isEmpty
-                      ? _buildEmptyBooking()
-                      : ListView.builder(
-                          controller: scrollCtrl,
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          itemCount: _bookings.length,
-                          itemBuilder: (_, i) =>
-                              _buildBookingCard(ctx, _bookings[i]),
-                        ),
+                  ? _buildEmptyBooking()
+                  : ListView.builder(
+                      controller: scrollCtrl,
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      itemCount: _bookings.length,
+                      itemBuilder: (_, i) =>
+                          _buildBookingCard(ctx, _bookings[i]),
+                    ),
             ),
           ],
         ),
@@ -417,9 +459,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Text(
             'No bookings yet',
             style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: Colors.black54),
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: Colors.black54,
+            ),
           ),
           SizedBox(height: 8),
           Text(
@@ -474,14 +517,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: Text(
                   booking.hotelName,
                   style: const TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black),
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
                 ),
               ),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   color: statusColor.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(20),
@@ -489,21 +535,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: Text(
                   statusLabel,
                   style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: statusColor),
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: statusColor,
+                  ),
                 ),
               ),
             ],
           ),
           const SizedBox(height: 6),
-          Text(booking.roomName,
-              style: const TextStyle(fontSize: 13, color: Colors.black54)),
+          Text(
+            booking.roomName,
+            style: const TextStyle(fontSize: 13, color: Colors.black54),
+          ),
           const SizedBox(height: 8),
           Row(
             children: [
-              const Icon(Icons.calendar_today_outlined,
-                  size: 13, color: Colors.black38),
+              const Icon(
+                Icons.calendar_today_outlined,
+                size: 13,
+                color: Colors.black38,
+              ),
               const SizedBox(width: 6),
               Text(
                 '${DateFormatter.format(booking.checkIn)} → ${DateFormatter.format(booking.checkOut)}',
@@ -517,14 +569,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Text(
                 CurrencyFormatter.format(booking.totalPrice),
                 style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.primary),
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.primary,
+                ),
               ),
               const Spacer(),
-              Text(booking.confirmationCode,
-                  style: const TextStyle(
-                      fontSize: 11, color: Colors.black38)),
+              Text(
+                booking.confirmationCode,
+                style: const TextStyle(fontSize: 11, color: Colors.black38),
+              ),
             ],
           ),
           if (booking.status == 'confirmed') ...[
@@ -538,15 +592,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   side: const BorderSide(color: AppColors.error),
                   foregroundColor: AppColors.error,
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                   padding: const EdgeInsets.symmetric(vertical: 10),
                 ),
                 onPressed: () {
                   Navigator.pop(sheetCtx);
                   _onCancelBooking(booking);
                 },
-                child: const Text('Cancel booking',
-                    style: TextStyle(fontSize: 13)),
+                child: const Text(
+                  'Cancel booking',
+                  style: TextStyle(fontSize: 13),
+                ),
               ),
             ),
           ],

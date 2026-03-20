@@ -209,7 +209,11 @@ class _MainScreenState extends State<MainScreen> {
         const Center(
           child: Text('NotificationsScreen - pending implementation'),
         ),
-        ProfileScreen(user: user),
+        ProfileScreen(
+          user: user,
+          wishlistIds: _wishlistIds,
+          allHotels: _allHotels,
+        ),
       ][_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
