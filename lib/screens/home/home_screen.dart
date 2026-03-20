@@ -11,7 +11,17 @@ import '../hotel/hotel_detail_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   final UserModel user;
-  const HomeScreen({super.key, required this.user});
+  final Set<String> wishlistIds;
+  final void Function(String hotelId) onWishlistToggle;
+  final void Function(List<HotelModel> hotels) onHotelsLoaded;
+
+  const HomeScreen({
+    super.key,
+    required this.user,
+    required this.wishlistIds,
+    required this.onWishlistToggle,
+    required this.onHotelsLoaded,
+  });
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -21,7 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final _destinationRepo = DestinationRepository();
   final _hotelRepo = HotelRepository();
   final _searchController = TextEditingController();
-  final Set<String> _wishlistIds = {};
+
   List<DestinationModel> _destinations = [];
   List<HotelModel> _hotels = [];
   bool _isLoading = false;
@@ -61,6 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
         _destinations = destinations;
         _hotels = hotels;
       });
+      widget.onHotelsLoaded(hotels);
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -81,6 +92,34 @@ class _HomeScreenState extends State<HomeScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (_) => SearchScreen(query: trimmed)),
+    );
+  }
+
+  // ── Wishlist button dùng chung ────────────────────────────────────────────
+
+  Widget _buildWishlistButton(HotelModel hotel) {
+    final isWishlisted = widget.wishlistIds.contains(hotel.id);
+    return GestureDetector(
+      onTap: () => widget.onWishlistToggle(hotel.id),
+      child: Container(
+        width: 36,
+        height: 36,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          shape: BoxShape.circle,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.1),
+              blurRadius: 4,
+            ),
+          ],
+        ),
+        child: Icon(
+          isWishlisted ? Icons.favorite : Icons.favorite_border,
+          size: 16,
+          color: isWishlisted ? Colors.red : Colors.grey,
+        ),
+      ),
     );
   }
 
@@ -131,8 +170,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildHeroBanner() {
     return Stack(
       children: [
-        // Background image placeholder
-        // TODO: replace with CachedNetworkImage when banner image is available
         // TODO: thay bằng CachedNetworkImage(url: _hotels.first.thumbnailUrl)
         if (_hotels.isNotEmpty)
           Image.network(
@@ -170,6 +207,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             child: const Icon(Icons.landscape, size: 80, color: Colors.white24),
           ),
+
         // Dark overlay gradient
         Container(
           height: 381,
@@ -231,7 +269,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       const SizedBox(height: 16),
 
-                      // Search bar - sync border style with Login
+                      // Search bar
                       TextField(
                         controller: _searchController,
                         textInputAction: TextInputAction.search,
@@ -349,7 +387,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // ── Popular Packages  ────────────────────────
+  // ── Popular Packages ──────────────────────────────────────────────────────
 
   Widget _buildPopularPackages() {
     if (_hotels.isEmpty) {
@@ -428,38 +466,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Positioned(
                   top: 14,
                   right: 14,
-                  child: GestureDetector(
-                    onTap: () => setState(() {
-                      if (_wishlistIds.contains(hotel.id)) {
-                        _wishlistIds.remove(hotel.id);
-                      } else {
-                        _wishlistIds.add(hotel.id);
-                      }
-                    }),
-                    child: Container(
-                      width: 36,
-                      height: 36,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.1),
-                            blurRadius: 4,
-                          ),
-                        ],
-                      ),
-                      child: Icon(
-                        _wishlistIds.contains(hotel.id)
-                            ? Icons.favorite
-                            : Icons.favorite_border,
-                        size: 16,
-                        color: _wishlistIds.contains(hotel.id)
-                            ? Colors.red
-                            : Colors.grey,
-                      ),
-                    ),
-                  ),
+                  child: _buildWishlistButton(hotel),
                 ),
               ],
             ),
@@ -522,7 +529,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // ── Destination Grid  ─────────────
+  // ── Destination Grid ──────────────────────────────────────────────────────
 
   Widget _buildDestinationGrid() {
     if (_destinations.isEmpty) {
@@ -614,7 +621,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // ── Travel Beyond  ──────────────
+  // ── Travel Beyond ─────────────────────────────────────────────────────────
 
   Widget _buildTravelBeyond() {
     if (_hotels.isEmpty) return const SizedBox.shrink();
@@ -685,38 +692,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Positioned(
                   top: 14,
                   right: 14,
-                  child: GestureDetector(
-                    onTap: () => setState(() {
-                      if (_wishlistIds.contains(hotel.id)) {
-                        _wishlistIds.remove(hotel.id);
-                      } else {
-                        _wishlistIds.add(hotel.id);
-                      }
-                    }),
-                    child: Container(
-                      width: 36,
-                      height: 36,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.1),
-                            blurRadius: 4,
-                          ),
-                        ],
-                      ),
-                      child: Icon(
-                        _wishlistIds.contains(hotel.id)
-                            ? Icons.favorite
-                            : Icons.favorite_border,
-                        size: 16,
-                        color: _wishlistIds.contains(hotel.id)
-                            ? Colors.red
-                            : Colors.grey,
-                      ),
-                    ),
-                  ),
+                  child: _buildWishlistButton(hotel),
                 ),
               ],
             ),
