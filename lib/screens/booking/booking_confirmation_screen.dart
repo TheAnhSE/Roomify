@@ -1,24 +1,46 @@
 import 'package:flutter/material.dart';
-import '../../core/constants/app_colors.dart';
-import '../../data/models/booking_model.dart';
 
-// TODO (Member 4): Implement booking confirmation screen based on Figma:
-//   - Payment2.jpg -> success confirmation screen (check icon, code, summary)
-// - Required param: BookingModel booking
-// - Large green check_circle icon at the top
-// - Bold, large confirmationCode
-// - Summary: hotelName, roomName, DateFormatter.format(checkIn/checkOut), CurrencyFormatter.format(totalPrice)
-// - "Back to Home" button -> Navigator.pushAndRemoveUntil to MainScreen
 class BookingConfirmationScreen extends StatelessWidget {
-  final BookingModel booking;
-  const BookingConfirmationScreen({super.key, required this.booking});
+  const BookingConfirmationScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
-      body: const Center(
-        child: Text('BookingConfirmationScreen - Member 4 implement'),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.check_circle,
+                  color: Colors.green, size: 80),
+              const SizedBox(height: 24),
+              const Text(
+                'Đặt phòng thành công!',
+                style: TextStyle(
+                    fontSize: 22, fontWeight: FontWeight.w700),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Chúng tôi sẽ xác nhận và sẽ liên hệ với bạn trong vài phút tới.',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.grey.shade600),
+              ),
+              const SizedBox(height: 32),
+              SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: ElevatedButton(
+                  onPressed: () {
+                    // Về màn hình chính
+                    Navigator.popUntil(context, (route) => route.isFirst);
+                  },
+                  child: const Text('Về trang chủ'),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
