@@ -8,45 +8,18 @@ import '../hotel/hotel_detail_screen.dart';
 
 class WishListScreen extends StatelessWidget {
   final UserModel user;
-  const WishListScreen({super.key, required this.user});
+  final Set<String> wishlistIds;
+  final List<HotelModel> allHotels;
 
-  @override
-  State<WishListScreen> createState() => _WishListScreenState();
-}
+  const WishListScreen({
+    super.key,
+    required this.user,
+    required this.wishlistIds,
+    required this.allHotels,
+  });
 
-class _WishListScreenState extends State<WishListScreen> {
-  final _hotelRepo = HotelRepository();
-  List<HotelModel> _hotels = [];
-  bool _isLoading = false;
-  String? _errorMessage;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadData();
-  }
-
-  Future<void> _loadData() async {
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
-    try {
-      final hotels = await _hotelRepo.getHotels();
-      setState(() => _hotels = hotels);
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.toString()), backgroundColor: Colors.red),
-        );
-      }
-      setState(() {
-        _errorMessage = 'Unable to load the list. Please try again.';
-      });
-    } finally {
-      setState(() => _isLoading = false);
-    }
-  }
+  List<HotelModel> get _wishlistedHotels =>
+      allHotels.where((h) => wishlistIds.contains(h.id)).toList();
 
   @override
   Widget build(BuildContext context) {
