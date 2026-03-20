@@ -7,6 +7,96 @@ import '../models/room_model.dart';
 class BookingRepository {
   final _db = FirebaseFirestore.instance;
 
+  /// Tạo booking với status pending — không khoá phòng.
+  Future<BookingModel> createPendingBooking({
+    required String userId,
+    required HotelModel hotel,
+    required RoomModel room,
+    required GuestModel guest,
+  }) async {
+    try {
+      final bookingRef = _db.collection('bookings').doc();
+      final checkIn = DateTime.now();
+      final checkOut = DateTime.now().add(const Duration(days: 1));
+      final totalPrice = room.pricePerNight * checkOut.difference(checkIn).inDays;
+      final roomName = '${room.roomNumber} - ${room.roomType}';
+
+      final prefix = userId.length >= 4
+          ? userId.substring(0, 4).toUpperCase()
+          : userId.toUpperCase();
+      final confirmationCode =
+          'BK-$prefix-${DateTime.now().millisecondsSinceEpoch.toString().substring(7)}';
+
+      final booking = BookingModel(
+        id: bookingRef.id,
+        userId: userId,
+        hotelId: hotel.id,
+        hotelName: hotel.name,
+        roomId: room.id,
+        roomName: roomName,
+        checkIn: checkIn,
+        checkOut: checkOut,
+        totalPrice: totalPrice,
+        status: 'pending',
+        createdAt: DateTime.now(),
+        confirmationCode: confirmationCode,
+        guest: guest,
+      );
+
+      await bookingRef.set(booking.toMap());
+      return booking;
+    } on FirebaseException catch (e) {
+      throw Exception('Tạo đặt phòng thất bại: ${e.message ?? "Vui lòng thử lại."}');
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  /// Cập nhật ngày và xác nhận booking — khoá phòng.
+  Future<BookingModel> updateBookingDates({
+    required String bookingId,
+    required DateTime checkIn,
+    required DateTime checkOut,
+    required double pricePerNight,
+  }) async {
+    try {
+      final bookingRef = _db.collection('bookings').doc(bookingId);
+      final totalPrice = pricePerNight * checkOut.difference(checkIn).inDays;
+
+      await _db.runTransaction((transaction) async {
+        final bookingSnap = await transaction.get(bookingRef);
+        final data = bookingSnap.data();
+        if (data == null) throw Exception('Không tìm thấy thông tin đặt phòng.');
+
+        final roomId = data['roomId'] as String?;
+        if (roomId == null) throw Exception('Không tìm thấy thông tin phòng.');
+
+        final roomRef = _db.collection('rooms').doc(roomId);
+        final roomSnap = await transaction.get(roomRef);
+        if (roomSnap.data()?['isAvailable'] == false) {
+          throw Exception('Phòng hiện không khả dụng');
+        }
+
+        transaction.update(bookingRef, {
+          'checkIn': Timestamp.fromDate(checkIn),
+          'checkOut': Timestamp.fromDate(checkOut),
+          'totalPrice': totalPrice,
+          'status': 'confirmed',
+        });
+        transaction.update(roomRef, {'isAvailable': false});
+      });
+
+      final snap = await bookingRef.get();
+      final data = snap.data();
+      if (data == null) throw Exception('Không tìm thấy thông tin đặt phòng.');
+      return BookingModel.fromMap(data, bookingId);
+    } on FirebaseException catch (e) {
+      throw Exception('Xác nhận đặt phòng thất bại: ${e.message ?? "Vui lòng thử lại."}');
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   // createBooking dùng Firestore Transaction để tránh double booking
   Future<BookingModel> createBooking({
     required String userId,
