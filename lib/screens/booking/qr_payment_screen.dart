@@ -15,6 +15,8 @@ class QrPaymentScreen extends StatefulWidget {
 }
 
 class _QrPaymentScreenState extends State<QrPaymentScreen> {
+  static const double _discountPercent = 0.15; // 15% giảm giá cố định
+
   final _bookingRepo = BookingRepository();
   bool _isLoading = false;
 
@@ -131,7 +133,49 @@ class _QrPaymentScreenState extends State<QrPaymentScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text(
-                        'Tổng tiền',
+                        'Tạm tính',
+                        style: TextStyle(
+                          color: AppColors.textSecondary,
+                          fontSize: 14,
+                        ),
+                      ),
+                      Text(
+                        CurrencyFormatter.format(booking.totalPrice),
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Giảm giá (15%)',
+                        style: TextStyle(
+                          color: AppColors.primary,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      Text(
+                        '-${CurrencyFormatter.format(booking.totalPrice * _discountPercent)}',
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const Divider(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Tổng thanh toán',
                         style: TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 14,
@@ -139,7 +183,9 @@ class _QrPaymentScreenState extends State<QrPaymentScreen> {
                         ),
                       ),
                       Text(
-                        CurrencyFormatter.format(booking.totalPrice),
+                        CurrencyFormatter.format(
+                          booking.totalPrice * (1 - _discountPercent),
+                        ),
                         style: const TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 16,
