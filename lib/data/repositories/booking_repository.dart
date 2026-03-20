@@ -97,6 +97,23 @@ class BookingRepository {
     }
   }
 
+  /// Cập nhật trạng thái booking thành công sau thanh toán QR.
+  Future<BookingModel> updateBookingStatusToSuccess(String bookingId) async {
+    try {
+      final bookingRef = _db.collection('bookings').doc(bookingId);
+      await bookingRef.update({'status': 'success'});
+
+      final snap = await bookingRef.get();
+      final data = snap.data();
+      if (data == null) throw Exception('Không tìm thấy thông tin đặt phòng.');
+      return BookingModel.fromMap(data, bookingId);
+    } on FirebaseException catch (e) {
+      throw Exception('Cập nhật trạng thái thất bại: ${e.message ?? "Vui lòng thử lại."}');
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   // createBooking dùng Firestore Transaction để tránh double booking
   Future<BookingModel> createBooking({
     required String userId,

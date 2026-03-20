@@ -5,7 +5,7 @@ import '../../core/utils/date_formatter.dart';
 import '../../data/models/booking_model.dart';
 import '../../data/repositories/booking_repository.dart';
 import '../../data/repositories/room_repository.dart';
-import 'booking_success_screen.dart';
+import 'qr_payment_screen.dart';
 
 /// Màn xác nhận thông tin trước thanh toán.
 class BookingConfirmationScreen extends StatefulWidget {
@@ -59,10 +59,10 @@ class _BookingConfirmationScreenState extends State<BookingConfirmationScreen> {
       );
 
       if (mounted) {
-        Navigator.pushReplacement(
+        Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => BookingSuccessScreen(booking: updated),
+            builder: (_) => QrPaymentScreen(booking: updated),
           ),
         );
       }

@@ -1,32 +1,78 @@
 import 'package:flutter/material.dart';
-import 'booking_confirmation_screen.dart';
+import '../../core/constants/app_colors.dart';
+import '../../core/utils/currency_formatter.dart';
+import '../../data/models/booking_model.dart';
+import '../../data/repositories/booking_repository.dart';
+import 'booking_success_screen.dart';
 
-class QrPaymentScreen extends StatelessWidget {
-  final String hotelName;
-  final String roomName;
-  final int totalAmount;
-  final int nights;
+class QrPaymentScreen extends StatefulWidget {
+  final BookingModel booking;
 
-  const QrPaymentScreen({
-    super.key,
-    required this.hotelName,
-    required this.roomName,
-    required this.totalAmount,
-    required this.nights,
-  });
+  const QrPaymentScreen({super.key, required this.booking});
 
-  String _formatCurrency(int amount) {
-    return amount.toString().replaceAllMapped(
-      RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-          (m) => '${m[1]},',
-    ) +
-        ' VND';
+  @override
+  State<QrPaymentScreen> createState() => _QrPaymentScreenState();
+}
+
+class _QrPaymentScreenState extends State<QrPaymentScreen> {
+  final _bookingRepo = BookingRepository();
+  bool _isLoading = false;
+
+  Future<void> _onPaymentConfirmed() async {
+    if (_isLoading) return;
+
+    setState(() => _isLoading = true);
+    try {
+      final updated = await _bookingRepo.updateBookingStatusToSuccess(
+        widget.booking.id,
+      );
+
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (_) => BookingSuccessScreen(booking: updated),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.toString()),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final booking = widget.booking;
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Thanh toán')),
+      backgroundColor: AppColors.background,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new, size: 20),
+          onPressed: () => Navigator.pop(context),
+          color: AppColors.textPrimary,
+        ),
+        title: const Text(
+          'Thanh toán',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            color: AppColors.textPrimary,
+          ),
+        ),
+        centerTitle: true,
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: Column(
@@ -38,37 +84,67 @@ class QrPaymentScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.grey.shade200),
+                border: Border.all(color: AppColors.surfaceDark),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(hotelName,
-                      style: const TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.w700)),
+                  Text(
+                    booking.hotelName,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
                   const SizedBox(height: 4),
-                  Text(roomName,
-                      style: TextStyle(color: Colors.grey.shade600)),
+                  Text(
+                    booking.roomName,
+                    style: const TextStyle(
+                      color: AppColors.textSecondary,
+                      fontSize: 14,
+                    ),
+                  ),
                   const Divider(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('Số đêm'),
-                      Text('$nights đêm'),
+                      const Text(
+                        'Số đêm',
+                        style: TextStyle(
+                          color: AppColors.textSecondary,
+                          fontSize: 14,
+                        ),
+                      ),
+                      Text(
+                        '${booking.numberOfNights} đêm',
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 8),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('Tổng tiền',
-                          style: TextStyle(fontWeight: FontWeight.w700)),
+                      const Text(
+                        'Tổng tiền',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 14,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
                       Text(
-                        _formatCurrency(totalAmount),
+                        CurrencyFormatter.format(booking.totalPrice),
                         style: const TextStyle(
-                            fontWeight: FontWeight.w700,
-                            fontSize: 16,
-                            color: Colors.green),
+                          fontWeight: FontWeight.w700,
+                          fontSize: 16,
+                          color: AppColors.primary,
+                        ),
                       ),
                     ],
                   ),
@@ -78,8 +154,14 @@ class QrPaymentScreen extends StatelessWidget {
 
             const SizedBox(height: 24),
 
-            const Text('Quét mã để thanh toán',
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500)),
+            const Text(
+              'Quét mã để thanh toán',
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w500,
+                color: AppColors.textPrimary,
+              ),
+            ),
             const SizedBox(height: 12),
 
             // Ảnh QR tĩnh
@@ -88,10 +170,10 @@ class QrPaymentScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: Colors.grey.shade200),
+                border: Border.all(color: AppColors.surfaceDark),
               ),
               child: Image.asset(
-                'assets/images/qr_bank.png',
+                'assets/images/qr.jpg',
                 width: 220,
                 height: 220,
                 fit: BoxFit.contain,
@@ -101,7 +183,10 @@ class QrPaymentScreen extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               'Chuyển khoản đúng số tiền trên',
-              style: TextStyle(color: Colors.grey.shade500, fontSize: 13),
+              style: TextStyle(
+                color: AppColors.textHint,
+                fontSize: 13,
+              ),
             ),
 
             const SizedBox(height: 32),
@@ -111,23 +196,28 @@ class QrPaymentScreen extends StatelessWidget {
               width: double.infinity,
               height: 52,
               child: ElevatedButton(
-                onPressed: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const BookingConfirmationScreen(),
-                    ),
-                  );
-                },
+                onPressed: _isLoading ? null : _onPaymentConfirmed,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
+                  backgroundColor: AppColors.primary,
+                  foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  textStyle: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
-                child: const Text(
-                  'Đã thanh toán',
-                  style: TextStyle(fontSize: 16, color: Colors.white),
-                ),
+                child: _isLoading
+                    ? const SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2.5,
+                        ),
+                      )
+                    : const Text('Đã thanh toán'),
               ),
             ),
           ],
@@ -135,4 +225,4 @@ class QrPaymentScreen extends StatelessWidget {
       ),
     );
   }
-}// TODO Implement this library.
+}
