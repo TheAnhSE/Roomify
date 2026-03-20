@@ -17,7 +17,6 @@ class WishListScreen extends StatefulWidget {
 
 class _WishListScreenState extends State<WishListScreen> {
   final _hotelRepo = HotelRepository();
-
   List<HotelModel> _hotels = [];
   bool _isLoading = false;
   String? _errorMessage;
