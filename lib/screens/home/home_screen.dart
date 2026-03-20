@@ -11,7 +11,17 @@ import '../hotel/hotel_detail_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   final UserModel user;
-  const HomeScreen({super.key, required this.user});
+  final Set<String> wishlistIds;
+  final void Function(String hotelId) onWishlistToggle;
+  final void Function(List<HotelModel> hotels) onHotelsLoaded;
+
+  const HomeScreen({
+    super.key,
+    required this.user,
+    required this.wishlistIds,
+    required this.onWishlistToggle,
+    required this.onHotelsLoaded,
+  });
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -61,6 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
         _destinations = destinations;
         _hotels = hotels;
       });
+      widget.onHotelsLoaded(hotels);
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -81,6 +92,34 @@ class _HomeScreenState extends State<HomeScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (_) => SearchScreen(query: trimmed)),
+    );
+  }
+
+  // ── Wishlist button dùng chung ────────────────────────────────────────────
+
+  Widget _buildWishlistButton(HotelModel hotel) {
+    final isWishlisted = widget.wishlistIds.contains(hotel.id);
+    return GestureDetector(
+      onTap: () => widget.onWishlistToggle(hotel.id),
+      child: Container(
+        width: 36,
+        height: 36,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          shape: BoxShape.circle,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.1),
+              blurRadius: 4,
+            ),
+          ],
+        ),
+        child: Icon(
+          isWishlisted ? Icons.favorite : Icons.favorite_border,
+          size: 16,
+          color: isWishlisted ? Colors.red : Colors.grey,
+        ),
+      ),
     );
   }
 
@@ -231,7 +270,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       const SizedBox(height: 16),
 
-                      // Search bar - sync border style with Login
+                      // Search bar
                       TextField(
                         controller: _searchController,
                         textInputAction: TextInputAction.search,
@@ -344,12 +383,23 @@ class _HomeScreenState extends State<HomeScreen> {
             color: AppColors.textPrimary,
             height: 1.3,
           ),
+      padding: const EdgeInsets.fromLTRB(16, 45, 16, 20),
+      child: SizedBox(
+        width: 262,
+        child: Text(
+          title,
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w700,
+            color: AppColors.textPrimary,
+            height: 1.3,
+          ),
         ),
       ),
     );
   }
 
-  // ── Popular Packages  ────────────────────────
+  // ── Popular Packages ──────────────────────────────────────────────────────
 
   Widget _buildPopularPackages() {
     if (_hotels.isEmpty) {
@@ -362,6 +412,7 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     }
     return SizedBox(
+      height: 340,
       height: 340,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
@@ -421,6 +472,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           color: Colors.white54,
                           size: 32,
                         ),
+                        child: Icon(
+                          Icons.hotel,
+                          color: Colors.white54,
+                          size: 32,
+                        ),
                       ),
                     ),
                   ),
@@ -467,6 +523,7 @@ class _HomeScreenState extends State<HomeScreen> {
             // Info
             Padding(
               padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
+              padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -480,6 +537,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
+                  const SizedBox(height: 6),
                   const SizedBox(height: 6),
                   Row(
                     children: [
@@ -522,7 +580,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // ── Destination Grid  ─────────────
+  // ── Destination Grid ──────────────────────────────────────────────────────
 
   Widget _buildDestinationGrid() {
     if (_destinations.isEmpty) {
@@ -614,7 +672,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // ── Travel Beyond  ──────────────
+  // ── Travel Beyond ─────────────────────────────────────────────────────────
 
   Widget _buildTravelBeyond() {
     if (_hotels.isEmpty) return const SizedBox.shrink();
@@ -723,6 +781,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
             // Info
             Padding(
+              padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
               padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

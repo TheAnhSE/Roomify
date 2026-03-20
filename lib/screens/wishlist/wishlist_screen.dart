@@ -4,10 +4,9 @@ import '../../core/constants/app_colors.dart';
 import '../../core/utils/currency_formatter.dart';
 import '../../data/models/user_model.dart';
 import '../../data/models/hotel_model.dart';
-import '../../data/repositories/hotel_repository.dart';
 import '../hotel/hotel_detail_screen.dart';
 
-class WishListScreen extends StatefulWidget {
+class WishListScreen extends StatelessWidget {
   final UserModel user;
   const WishListScreen({super.key, required this.user});
 
@@ -51,47 +50,42 @@ class _WishListScreenState extends State<WishListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final hotels = _wishlistedHotels;
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
-        child: _isLoading
-            ? const Center(child: CircularProgressIndicator())
-            : _errorMessage != null
-            ? _buildError()
-            : RefreshIndicator(
-                onRefresh: _loadData,
-                child: CustomScrollView(
-                  slivers: [
-                    // ── Header ────────────────────────────────────────
-                    SliverToBoxAdapter(child: _buildHeader()),
+        child: CustomScrollView(
+          slivers: [
+            // ── Header ────────────────────────────────────────
+            SliverToBoxAdapter(child: _buildHeader()),
 
-                    // ── List ──────────────────────────────────────────
-                    _hotels.isEmpty
-                        ? const SliverFillRemaining(
-                            child: Center(
-                              child: Text(
-                                'No hotels yet.',
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  color: AppColors.textSecondary,
-                                ),
-                              ),
-                            ),
-                          )
-                        : SliverList(
-                            delegate: SliverChildBuilderDelegate(
-                              (context, index) => _buildWishlistItem(
-                                _hotels[index],
-                                isLast: index == _hotels.length - 1,
-                              ),
-                              childCount: _hotels.length,
-                            ),
-                          ),
+            // ── List ──────────────────────────────────────────
+            hotels.isEmpty
+                ? const SliverFillRemaining(
+                    child: Center(
+                      child: Text(
+                        'No hotels in wishlist yet.',
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                    ),
+                  )
+                : SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) => _buildWishlistItem(
+                        context,
+                        hotels[index],
+                        isLast: index == hotels.length - 1,
+                      ),
+                      childCount: hotels.length,
+                    ),
+                  ),
 
-                    const SliverToBoxAdapter(child: SizedBox(height: 32)),
-                  ],
-                ),
-              ),
+            const SliverToBoxAdapter(child: SizedBox(height: 32)),
+          ],
+        ),
       ),
     );
   }
@@ -114,7 +108,11 @@ class _WishListScreenState extends State<WishListScreen> {
 
   // ── Wishlist item ─────────────────────────────────────────────────────────
 
-  Widget _buildWishlistItem(HotelModel hotel, {required bool isLast}) {
+  Widget _buildWishlistItem(
+    BuildContext context,
+    HotelModel hotel, {
+    required bool isLast,
+  }) {
     return Column(
       children: [
         GestureDetector(
@@ -289,46 +287,6 @@ class _WishListScreenState extends State<WishListScreen> {
             endIndent: 16,
           ),
       ],
-    );
-  }
-  // ── Error state ───────────────────────────────────────────────────────────
-
-  Widget _buildError() {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(Icons.wifi_off, size: 48, color: Colors.grey),
-            const SizedBox(height: 12),
-            Text(
-              _errorMessage!,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 13,
-                color: AppColors.textSecondary,
-              ),
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                textStyle: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              onPressed: _loadData,
-              child: const Text('Retry'),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
