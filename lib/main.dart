@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
 import 'core/constants/app_colors.dart';
 import 'data/models/user_model.dart';
+import 'data/models/hotel_model.dart';
 import 'data/repositories/auth_repository.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/onboarding/onboarding_screen.dart';
@@ -125,6 +126,10 @@ class _MainScreenState extends State<MainScreen> {
   bool _isLoading = true;
   String? _errorMessage;
 
+  // Wishlist state — dùng chung cho HomeScreen và WishListScreen
+  final Set<String> _wishlistIds = {};
+  List<HotelModel> _allHotels = [];
+
   @override
   void initState() {
     super.initState();
@@ -146,6 +151,22 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
+  void _onWishlistToggle(String hotelId) {
+    setState(() {
+      if (_wishlistIds.contains(hotelId)) {
+        _wishlistIds.remove(hotelId);
+      } else {
+        _wishlistIds.add(hotelId);
+      }
+    });
+  }
+
+  void _onHotelsLoaded(List<HotelModel> hotels) {
+    if (_allHotels.isEmpty) {
+      setState(() => _allHotels = hotels);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
@@ -163,10 +184,7 @@ class _MainScreenState extends State<MainScreen> {
                 style: const TextStyle(color: Colors.grey),
               ),
               const SizedBox(height: 12),
-              ElevatedButton(
-                onPressed: _loadUser,
-                child: const Text('Retry'),
-              ),
+              ElevatedButton(onPressed: _loadUser, child: const Text('Retry')),
             ],
           ),
         ),
@@ -177,9 +195,20 @@ class _MainScreenState extends State<MainScreen> {
 
     return Scaffold(
       body: [
-        HomeScreen(user: user),
-        WishListScreen(user: user),
-        const Center(child: Text('NotificationsScreen - pending implementation')),
+        HomeScreen(
+          user: user,
+          wishlistIds: _wishlistIds,
+          onWishlistToggle: _onWishlistToggle,
+          onHotelsLoaded: _onHotelsLoaded,
+        ),
+        WishListScreen(
+          user: user,
+          wishlistIds: _wishlistIds,
+          allHotels: _allHotels,
+        ),
+        const Center(
+          child: Text('NotificationsScreen - pending implementation'),
+        ),
         ProfileScreen(user: user),
       ][_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
