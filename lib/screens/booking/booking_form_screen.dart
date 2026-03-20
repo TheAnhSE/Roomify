@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../core/constants/app_colors.dart';
-import '../../core/utils/currency_formatter.dart';
 import '../../data/models/guest_model.dart';
 import '../../data/models/hotel_model.dart';
 import '../../data/models/room_model.dart';
@@ -35,12 +34,6 @@ class _BookingFormScreenState extends State<BookingFormScreen> {
   bool _isLoading = false;
   static const _countryCode = '+84';
 
-  static const _defaultNights = 1;
-
-  DateTime get _checkIn => DateTime.now();
-  DateTime get _checkOut => DateTime.now().add(const Duration(days: _defaultNights));
-  int get _numberOfNights => _checkOut.difference(_checkIn).inDays;
-  double get _totalPrice => widget.room.pricePerNight * _numberOfNights;
   int get _guestCount => int.tryParse(_guestNumberController.text) ?? 1;
 
   @override
@@ -292,16 +285,8 @@ class _BookingFormScreenState extends State<BookingFormScreen> {
                 ],
               ),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    CurrencyFormatter.format(_totalPrice),
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.primary,
-                    ),
-                  ),
                   SizedBox(
                     width: 140,
                     height: 54,
