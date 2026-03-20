@@ -4,6 +4,16 @@ import '../models/room_model.dart';
 class RoomRepository {
   final _db = FirebaseFirestore.instance;
 
+  Future<RoomModel?> getRoomById(String roomId) async {
+    try {
+      final doc = await _db.collection('rooms').doc(roomId).get();
+      if (!doc.exists) return null;
+      return RoomModel.fromMap(doc.data()!, doc.id);
+    } catch (e) {
+      return null;
+    }
+  }
+
   Future<List<RoomModel>> getRoomsByHotel(String hotelId) async {
     try {
       final snapshot = await _db
