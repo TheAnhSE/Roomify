@@ -21,7 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final _destinationRepo = DestinationRepository();
   final _hotelRepo = HotelRepository();
   final _searchController = TextEditingController();
-
+  final Set<String> _wishlistIds = {};
   List<DestinationModel> _destinations = [];
   List<HotelModel> _hotels = [];
   bool _isLoading = false;
@@ -133,19 +133,43 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         // Background image placeholder
         // TODO: replace with CachedNetworkImage when banner image is available
-        Container(
-          height: 381,
-          width: double.infinity,
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [AppColors.primary, AppColors.primaryDark],
+        // TODO: thay bằng CachedNetworkImage(url: _hotels.first.thumbnailUrl)
+        if (_hotels.isNotEmpty)
+          Image.network(
+            _destinations.last.imageUrl,
+            height: 381,
+            width: double.infinity,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) => Container(
+              height: 381,
+              width: double.infinity,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [AppColors.primary, AppColors.primaryDark],
+                ),
+              ),
+              child: const Icon(
+                Icons.landscape,
+                size: 80,
+                color: Colors.white24,
+              ),
             ),
+          )
+        else
+          Container(
+            height: 381,
+            width: double.infinity,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [AppColors.primary, AppColors.primaryDark],
+              ),
+            ),
+            child: const Icon(Icons.landscape, size: 80, color: Colors.white24),
           ),
-          child: const Icon(Icons.landscape, size: 80, color: Colors.white24),
-        ),
-
         // Dark overlay gradient
         Container(
           height: 381,
@@ -309,14 +333,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildSectionHeader(String title) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 20, 16, 12),
-      child: Text(
-        title,
-        style: const TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.w700,
-          color: AppColors.textPrimary,
-          height: 1.3,
+      padding: const EdgeInsets.fromLTRB(16, 45, 16, 20),
+      child: SizedBox(
+        width: 262,
+        child: Text(
+          title,
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w700,
+            color: AppColors.textPrimary,
+            height: 1.3,
+          ),
         ),
       ),
     );
@@ -335,7 +362,7 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     }
     return SizedBox(
-      height: 381,
+      height: 340,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -389,7 +416,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     errorWidget: (context, url, error) => Container(
                       color: Colors.grey.shade300,
                       child: const Center(
-                        child: Icon(Icons.hotel, color: Colors.white54, size: 32),
+                        child: Icon(
+                          Icons.hotel,
+                          color: Colors.white54,
+                          size: 32,
+                        ),
                       ),
                     ),
                   ),
@@ -397,23 +428,36 @@ class _HomeScreenState extends State<HomeScreen> {
                 Positioned(
                   top: 14,
                   right: 14,
-                  child: Container(
-                    width: 36,
-                    height: 36,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.1),
-                          blurRadius: 4,
-                        ),
-                      ],
-                    ),
-                    child: const Icon(
-                      Icons.favorite_border,
-                      size: 16,
-                      color: Colors.grey,
+                  child: GestureDetector(
+                    onTap: () => setState(() {
+                      if (_wishlistIds.contains(hotel.id)) {
+                        _wishlistIds.remove(hotel.id);
+                      } else {
+                        _wishlistIds.add(hotel.id);
+                      }
+                    }),
+                    child: Container(
+                      width: 36,
+                      height: 36,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.1),
+                            blurRadius: 4,
+                          ),
+                        ],
+                      ),
+                      child: Icon(
+                        _wishlistIds.contains(hotel.id)
+                            ? Icons.favorite
+                            : Icons.favorite_border,
+                        size: 16,
+                        color: _wishlistIds.contains(hotel.id)
+                            ? Colors.red
+                            : Colors.grey,
+                      ),
                     ),
                   ),
                 ),
@@ -422,7 +466,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
             // Info
             Padding(
-              padding: const EdgeInsets.fromLTRB(10, 8, 10, 0),
+              padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -436,7 +480,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 6),
                   Row(
                     children: [
                       ...List.generate(
@@ -575,7 +619,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildTravelBeyond() {
     if (_hotels.isEmpty) return const SizedBox.shrink();
     return SizedBox(
-      height: 381,
+      height: 340,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -641,23 +685,36 @@ class _HomeScreenState extends State<HomeScreen> {
                 Positioned(
                   top: 14,
                   right: 14,
-                  child: Container(
-                    width: 36,
-                    height: 36,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.1),
-                          blurRadius: 4,
-                        ),
-                      ],
-                    ),
-                    child: const Icon(
-                      Icons.favorite_border,
-                      size: 16,
-                      color: Colors.grey,
+                  child: GestureDetector(
+                    onTap: () => setState(() {
+                      if (_wishlistIds.contains(hotel.id)) {
+                        _wishlistIds.remove(hotel.id);
+                      } else {
+                        _wishlistIds.add(hotel.id);
+                      }
+                    }),
+                    child: Container(
+                      width: 36,
+                      height: 36,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.1),
+                            blurRadius: 4,
+                          ),
+                        ],
+                      ),
+                      child: Icon(
+                        _wishlistIds.contains(hotel.id)
+                            ? Icons.favorite
+                            : Icons.favorite_border,
+                        size: 16,
+                        color: _wishlistIds.contains(hotel.id)
+                            ? Colors.red
+                            : Colors.grey,
+                      ),
                     ),
                   ),
                 ),
@@ -666,7 +723,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
             // Info
             Padding(
-              padding: const EdgeInsets.fromLTRB(10, 8, 10, 0),
+              padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
