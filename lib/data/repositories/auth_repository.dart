@@ -11,7 +11,8 @@ class AuthRepository {
   final _storage = FirebaseStorage.instance;
 
   // ─── Login ──────────────────────────────────────────────────────────────────
-  Future<UserModel?> login(String email, String password) async {
+  Future<UserModel?> login(String email, String password) async
+  {
     try {
       final credential = await _auth.signInWithEmailAndPassword(
         email: email,
