@@ -58,6 +58,34 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 24, top: 16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                "Don't have an account? ",
+                style: TextStyle(fontSize: 14, color: Colors.black54),
+              ),
+              GestureDetector(
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const RegisterScreen()),
+                ),
+                child: const Text(
+                  'Sign up now',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primary,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -223,34 +251,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 _googleLoginBtn(),
 
                 const SizedBox(height: 48),
-
-                // ── Create account ────────────────────────────────────────────
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      "Doesn't have account on dicover? ",
-                      style: TextStyle(fontSize: 14, color: Colors.black54),
-                    ),
-                    GestureDetector(
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => const RegisterScreen()),
-                      ),
-                      child: const Text(
-                        'Sign up now',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.primary,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 24),
               ],
             ),
           ),

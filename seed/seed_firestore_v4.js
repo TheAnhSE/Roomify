@@ -102,6 +102,30 @@ const destinations = [
       "Vietnam's economic powerhouse and most dynamic metropolis, where French colonial landmarks meet gleaming skyscrapers. Renowned for its electric street-food scene, rooftop bars, and round-the-clock energy.",
     hotelCount: 3,
   },
+  {
+    id: "dest_sapa",
+    name: "Sapa",
+    imageUrl: "https://images.unsplash.com/photo-1590400589139-3832c3f1de92?w=800&q=80",
+    description:
+      "A misty mountain town in northwest Vietnam known for its terraced rice fields, vibrant hill-tribe culture, and the peak of Fansipan. Famous for dramatic landscapes and cool climate year-round.",
+    hotelCount: 3,
+  },
+  {
+    id: "dest_halong",
+    name: "Hạ Long",
+    imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?w=800&q=80",
+    description:
+      "A UNESCO World Heritage site renowned for its emerald waters and thousands of towering limestone islands topped with rainforests. One of the most spectacular natural wonders of the world.",
+    hotelCount: 3,
+  },
+  {
+    id: "dest_haiphong",
+    name: "Hải Phòng",
+    imageUrl: "https://images.unsplash.com/photo-1596701062351-8c2c14d1fdd0?w=800&q=80",
+    description:
+      "Vietnam's third-largest city and the premier port in northern Vietnam. Often called the 'City of Flamboyant Flowers', it serves as a major hub for tourism to Cat Ba Island and Lan Ha Bay.",
+    hotelCount: 3,
+  },
 ];
 
 // ─────────────────────────────────────────────────────────────
@@ -476,6 +500,228 @@ const hotels = [
       "Rooftop Bar", "Fitness Center", "Business Centre", "Airport Transfer",
     ],
     stars: 4,
+    checkInTime: "14:00",
+    checkOutTime: "12:00",
+  },
+
+  // ── SAPA ──────────────────────────────────────────────
+  {
+    id: "hotel_sp_1",
+    name: "Hotel de la Coupole - MGallery",
+    city: "Sapa",
+    country: "Vietnam",
+    address: "1 Hoang Lien Street, Sapa, Lao Cai",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80",
+      "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800&q=80",
+      "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=800&q=80",
+      "https://images.unsplash.com/photo-1540541338287-41700207dee6?w=800&q=80",
+    ],
+    rating: 4.9,
+    priceFrom: 3500000,
+    description:
+      "A masterpiece of design by Bill Bensley, blending French haute couture with Sapa hill tribe style. Featuring an indoor heated pool, a luxurious spa, and direct access to the Fansipan cable car station.",
+    amenities: [
+      "Free WiFi", "Indoor Heated Pool", "Luxury Spa", "French Restaurant",
+      "Rooftop Bar", "Fitness Center", "Mountain Views", "Cable Car Access",
+    ],
+    stars: 5,
+    checkInTime: "14:00",
+    checkOutTime: "12:00",
+  },
+  {
+    id: "hotel_sp_2",
+    name: "Topas Ecolodge",
+    city: "Sapa",
+    country: "Vietnam",
+    address: "Thanh Kim, Sapa, Lao Cai",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&q=80",
+      "https://images.unsplash.com/photo-1584132967334-10e028bd69f7?w=800&q=80",
+      "https://images.unsplash.com/photo-1551882547-ff40c63fe2a4?w=800&q=80",
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80",
+    ],
+    rating: 4.8,
+    priceFrom: 4500000,
+    description:
+      "A boutique eco-lodge positioned on a majestic hilltop deep in the mountains of Hoang Lien National Park. Famous for its breathtaking infinity pool overlooking terraced valleys.",
+    amenities: [
+      "Free WiFi", "Infinity Pool", "Eco-Friendly", "Organic Restaurant",
+      "Mountain Retreat", "Spa", "Trekking Tours", "Free Shuttle",
+    ],
+    stars: 5,
+    checkInTime: "14:00",
+    checkOutTime: "12:00",
+  },
+  {
+    id: "hotel_sp_3",
+    name: "Pao's Sapa Leisure Hotel",
+    city: "Sapa",
+    country: "Vietnam",
+    address: "Muong Hoa Street, Sapa, Lao Cai",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1576354302919-96748cb8299e?w=800&q=80",
+      "https://images.unsplash.com/photo-1590490360182-c33d57733427?w=800&q=80",
+      "https://images.unsplash.com/photo-1598928506311-c55ded91a20c?w=800&q=80",
+      "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=800&q=80",
+    ],
+    rating: 4.6,
+    priceFrom: 1800000,
+    description:
+      "Offering the best views of the iconic Muong Hoa Valley. The hotel curves seamlessly along the hillside, providing modern luxury with panoramic vistas from all its rooms.",
+    amenities: [
+      "Free WiFi", "Indoor Pool", "Valley View", "Restaurant",
+      "Rooftop Bar", "Fitness Center", "Spa & Massage",
+    ],
+    stars: 5,
+    checkInTime: "14:00",
+    checkOutTime: "12:00",
+  },
+
+  // ── HẠ LONG ──────────────────────────────────────────────
+  {
+    id: "hotel_hl_1",
+    name: "Vinpearl Resort & Spa Hạ Long",
+    city: "Hạ Long",
+    country: "Vietnam",
+    address: "Reu Island, Bai Chay, Ha Long, Quang Ninh",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?w=800&q=80",
+      "https://images.unsplash.com/photo-1614267157481-ca2b81ac6fcc?w=800&q=80",
+      "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800&q=80",
+      "https://images.unsplash.com/photo-1563911302283-d2bc129e7570?w=800&q=80",
+    ],
+    rating: 4.7,
+    priceFrom: 2800000,
+    description:
+      "A spectacular resort located entirely on its own private island (Reu Island), offering 360-degree views of Ha Long Bay. Accessible by a quick speedboat transfer, it is a perfect sanctuary of relaxation.",
+    amenities: [
+      "Free WiFi", "Private Island", "3 Beaches", "Large Outdoor Pool",
+      "Spa", "Fitness Center", "Multiple Restaurants", "Speedboat Transfer",
+    ],
+    stars: 5,
+    checkInTime: "15:00",
+    checkOutTime: "12:00",
+  },
+  {
+    id: "hotel_hl_2",
+    name: "Wyndham Legend Halong",
+    city: "Hạ Long",
+    country: "Vietnam",
+    address: "12 Ha Long Road, Bai Chay, Ha Long, Quang Ninh",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1540202404-a2f29637228f?w=800&q=80",
+      "https://images.unsplash.com/photo-1584132915807-fd1f5fbc078f?w=800&q=80",
+      "https://images.unsplash.com/photo-1578645510447-e20b4311e3ce?w=800&q=80",
+      "https://images.unsplash.com/photo-1566737236500-c8ac43014a67?w=800&q=80",
+    ],
+    rating: 4.5,
+    priceFrom: 1600000,
+    description:
+      "A premier five-star hotel situated on the coastline of Bai Chay, boasting breathtaking views of the ocean and the Bai Chay Bridge. Offers an outdoor pool and world-class dining.",
+    amenities: [
+      "Free WiFi", "Ocean View", "Outdoor Pool", "Fitness Center",
+      "Japanese/Chinese Restaurant", "Kids Club", "Business Centre",
+    ],
+    stars: 5,
+    checkInTime: "14:00",
+    checkOutTime: "12:00",
+  },
+  {
+    id: "hotel_hl_3",
+    name: "Mường Thanh Luxury Hạ Long Centre",
+    city: "Hạ Long",
+    country: "Vietnam",
+    address: "Zone 2, Ha Long street, Bai Chay, Ha Long, Quang Ninh",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1543968996-ee822b8176ba?w=800&q=80",
+      "https://images.unsplash.com/photo-1519449374306-4e2c2e8e47e7?w=800&q=80",
+      "https://images.unsplash.com/photo-1580041279827-9a6e2dc48a58?w=800&q=80",
+      "https://images.unsplash.com/photo-1568084680786-a84f91d1153c?w=800&q=80",
+    ],
+    rating: 4.3,
+    priceFrom: 1200000,
+    description:
+      "Located right in the heart of the Bai Chay tourist area alongside Ha Long Bay. This modern hotel offers luxury accommodations with excellent facilities for both leisure and business travelers.",
+    amenities: [
+      "Free WiFi", "Swimming Pool", "Spa & Wellness", "Fitness Center",
+      "Karaoke", "Bar/Lounge", "Conference Rooms",
+    ],
+    stars: 5,
+    checkInTime: "14:00",
+    checkOutTime: "12:00",
+  },
+
+  // ── HẢI PHÒNG ─────────────────────────────────────────────
+  {
+    id: "hotel_hp_1",
+    name: "Sheraton Hai Phong",
+    city: "Hải Phòng",
+    country: "Vietnam",
+    address: "Vinhomes Imperia, Hanoi Road, Thuong Ly, Hong Bang, Hai Phong",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1445019980597-93fa8acb246c?w=800&q=80",
+      "https://images.unsplash.com/photo-1562778612-e1e0cda9915c?w=800&q=80",
+      "https://images.unsplash.com/photo-1560347876-aeef00ee58a1?w=800&q=80",
+      "https://images.unsplash.com/photo-1522798514-97ceb8c4f1c8?w=800&q=80",
+    ],
+    rating: 4.8,
+    priceFrom: 2200000,
+    description:
+      "Hải Phòng's tallest and most luxurious tower, offering panoramic views of the entire city. It combines elegant European design with exceptional modern amenities.",
+    amenities: [
+      "Free WiFi", "Indoor Pool", "Sheraton Spa", "Dining Restaurants",
+      "Sky Bar", "Fitness Center", "Executive Lounge", "City Panoramas",
+    ],
+    stars: 5,
+    checkInTime: "15:00",
+    checkOutTime: "12:00",
+  },
+  {
+    id: "hotel_hp_2",
+    name: "Meliá Vinpearl Hai Phong Rivera",
+    city: "Hải Phòng",
+    country: "Vietnam",
+    address: "Manhattan 9, Vinhomes Imperia, Hong Bang, Hai Phong",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1587490499596-b3f5b06c2a5e?w=800&q=80",
+      "https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=800&q=80",
+      "https://images.unsplash.com/photo-1629140727571-9b5c6f6267b4?w=800&q=80",
+      "https://images.unsplash.com/photo-1593085512500-5d55148d6f0d?w=800&q=80",
+    ],
+    rating: 4.6,
+    priceFrom: 1800000,
+    description:
+      "An elegant oasis in the bustling city, featuring classic French architecture with beautiful lake views within the Vinhomes Imperia complex.",
+    amenities: [
+      "Free WiFi", "Outdoor Pool", "YHI Spa", "Lake View",
+      "Fitness Center", "Gourmet Dining", "Tennis Court",
+    ],
+    stars: 5,
+    checkInTime: "14:00",
+    checkOutTime: "12:00",
+  },
+  {
+    id: "hotel_hp_3",
+    name: "Mercure Hai Phong",
+    city: "Hải Phòng",
+    country: "Vietnam",
+    address: "12 Lach Tray Street, Ngo Quyen, Hai Phong",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1566409579-560691bcea48?w=800&q=80",
+      "https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=800&q=80",
+      "https://images.unsplash.com/photo-1612537935159-e1ed7be30f33?w=800&q=80",
+      "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=800&q=80",
+    ],
+    rating: 4.4,
+    priceFrom: 1100000,
+    description:
+      "A trendy 5-star hotel centrally located near the Opera House and Lach Tray stadium, offering modern French flair combined with local Vietnamese hospitality.",
+    amenities: [
+      "Free WiFi", "Rooftop Pool", "Bloom Spa", "Flame Grill Restaurant",
+      "Cloud9 Bar", "Fitness Center", "Business Centre",
+    ],
+    stars: 5,
     checkInTime: "14:00",
     checkOutTime: "12:00",
   },

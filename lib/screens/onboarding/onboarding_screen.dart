@@ -18,25 +18,25 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final List<_OnboardingData> _pages = const [
     _OnboardingData(
       imagePath: 'assets/images/onboarding1.jpg',
-      title: 'Ready for\na new trip',
-      description: 'Discover thousands of exciting\ndestinations waiting for you',
+      title: 'Get ready for the\nnext trip',
+      description: 'Find thousans of tourist destinations\nready for you to visit',
     ),
     _OnboardingData(
       imagePath: 'assets/images/onboarding2.jpg',
-      title: 'Experience\npremium services',
-      description: 'Find your ideal stay\nat the best possible price',
+      title: 'Trải nghiệm\ndịch vụ đẳng cấp',
+      description: 'Tìm kiếm không gian nghỉ dưỡng lý tưởng\nvới mức giá ưu đãi nhất',
     ),
     _OnboardingData(
       imagePath: 'assets/images/onboarding3.jpg',
-      title: 'Explore the\nworld with us',
-      description: 'Start your journey today\nwith unforgettable experiences',
+      title: 'Khám phá\nthế giới cùng chúng tôi',
+      description: 'Bắt đầu hành trình của bạn ngay hôm nay\nvới những trải nghiệm khó quên',
     ),
   ];
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Preload images for smoother transitions.
+    // Tải trước hình ảnh để đảm bảo độ mượt khi chuyển trang
     for (var page in _pages) {
       precacheImage(AssetImage(page.imagePath), context);
     }
@@ -85,7 +85,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               return Image.asset(
                 _pages[i].imagePath,
                 fit: BoxFit.cover,
-                // Limit decode resolution to reduce memory usage.
+                // Giới hạn độ phân giải decode để tiết kiệm RAM và tăng độ mượt
                 cacheWidth: 1080,
                 errorBuilder: (_, __, ___) => Container(
                   decoration: const BoxDecoration(
@@ -151,7 +151,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       ),
                       onPressed: _next,
                       child: Text(
-                          _currentPage < _pages.length - 1 ? 'Continue' : 'Get started'),
+                          _currentPage < _pages.length - 1 ? 'Tiếp tục' : 'Bắt đầu ngay'),
                     ),
                   ),
 
