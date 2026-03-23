@@ -8,10 +8,7 @@ import '../../data/repositories/booking_repository.dart';
 class BookingHistoryScreen extends StatefulWidget {
   final String userId;
 
-  const BookingHistoryScreen({
-    super.key,
-    required this.userId,
-  });
+  const BookingHistoryScreen({super.key, required this.userId});
 
   @override
   State<BookingHistoryScreen> createState() => _BookingHistoryScreenState();
@@ -112,45 +109,45 @@ class _BookingHistoryScreenState extends State<BookingHistoryScreen> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _errorMessage != null
-              ? Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(24),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.error_outline,
-                          size: 48,
-                          color: AppColors.error.withValues(alpha: 0.7),
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          _errorMessage!,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: AppColors.textSecondary,
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        FilledButton(
-                          onPressed: _loadBookings,
-                          child: const Text('Retry'),
-                        ),
-                      ],
+          ? Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.error_outline,
+                      size: 48,
+                      color: AppColors.error.withValues(alpha: 0.7),
                     ),
-                  ),
-                )
-              : _bookings.isEmpty
-                  ? _buildEmptyState()
-                  : RefreshIndicator(
-                      onRefresh: _loadBookings,
-                      child: ListView.builder(
-                        padding: const EdgeInsets.all(16),
-                        itemCount: _bookings.length,
-                        itemBuilder: (_, i) => _buildBookingCard(_bookings[i]),
+                    const SizedBox(height: 16),
+                    Text(
+                      _errorMessage!,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: AppColors.textSecondary,
                       ),
                     ),
+                    const SizedBox(height: 16),
+                    FilledButton(
+                      onPressed: _loadBookings,
+                      child: const Text('Retry'),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          : _bookings.isEmpty
+          ? _buildEmptyState()
+          : RefreshIndicator(
+              onRefresh: _loadBookings,
+              child: ListView.builder(
+                padding: const EdgeInsets.all(16),
+                itemCount: _bookings.length,
+                itemBuilder: (_, i) => _buildBookingCard(_bookings[i]),
+              ),
+            ),
     );
   }
 
