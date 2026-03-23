@@ -502,7 +502,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        '${hotel.rating.toStringAsFixed(0)} reviews',
+                        '${hotel.rating.toStringAsFixed(1)} · ${(hotel.rating * 20).round()} reviews', // ✅ Khớp với detail
                         style: const TextStyle(
                           fontSize: 10,
                           color: AppColors.textSecondary,
@@ -728,7 +728,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        '${hotel.rating.toStringAsFixed(0)} reviews',
+                        '${hotel.rating.toStringAsFixed(1)} · ${(hotel.rating * 20).round()} reviews', // ✅ Khớp với detail
                         style: const TextStyle(
                           fontSize: 10,
                           color: AppColors.textSecondary,

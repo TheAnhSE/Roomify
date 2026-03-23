@@ -47,9 +47,9 @@ class _HotelDetailScreenState extends State<HotelDetailScreen> {
   }
 
   String _formatFromPrice(double amount) {
-    final formatted = CurrencyFormatter.format(amount)
-        .replaceAll(' ₫', '')
-        .replaceAll('.', ',');
+    final formatted = CurrencyFormatter.format(
+      amount,
+    ).replaceAll(' ₫', '').replaceAll('.', ',');
     return '$formatted VND';
   }
 
@@ -102,11 +102,8 @@ class _HotelDetailScreenState extends State<HotelDetailScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => BookingFormScreen(
-          hotel: widget.hotel,
-          room: room,
-          user: user,
-        ),
+        builder: (_) =>
+            BookingFormScreen(hotel: widget.hotel, room: room, user: user),
       ),
     );
   }
@@ -114,9 +111,7 @@ class _HotelDetailScreenState extends State<HotelDetailScreen> {
   void _openRoomsSheet() {
     if (_rooms.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('No available rooms right now.'),
-        ),
+        const SnackBar(content: Text('No available rooms right now.')),
       );
       return;
     }
@@ -149,20 +144,21 @@ class _HotelDetailScreenState extends State<HotelDetailScreen> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _errorMessage != null
-              ? _buildErrorState()
-              : SafeArea(
-                  child: RefreshIndicator(
-                    onRefresh: _loadData,
-                    child: CustomScrollView(
-                      slivers: [
-                        SliverToBoxAdapter(child: _buildImageGallery(hotel)),
-                        SliverToBoxAdapter(child: _buildHotelInfo(hotel)),
-                        SliverToBoxAdapter(child: _buildAmenities(hotel)),
-                        const SliverToBoxAdapter(child: SizedBox(height: 110)),
-                      ],
-                    ),
-                  ),
+          ? _buildErrorState()
+          : SafeArea(
+              child: RefreshIndicator(
+                onRefresh: _loadData,
+                child: CustomScrollView(
+                  slivers: [
+                    SliverToBoxAdapter(child: _buildImageGallery(hotel)),
+                    SliverToBoxAdapter(child: _buildHotelInfo(hotel)),
+                    SliverToBoxAdapter(child: _buildAmenities(hotel)),
+                    SliverToBoxAdapter(child: _buildReviews(hotel)),
+                    const SliverToBoxAdapter(child: SizedBox(height: 110)),
+                  ],
                 ),
+              ),
+            ),
     );
   }
 
@@ -179,7 +175,11 @@ class _HotelDetailScreenState extends State<HotelDetailScreen> {
                   ? Container(
                       color: AppColors.surfaceDark,
                       child: const Center(
-                        child: Icon(Icons.image_outlined, color: Colors.white70, size: 40),
+                        child: Icon(
+                          Icons.image_outlined,
+                          color: Colors.white70,
+                          size: 40,
+                        ),
                       ),
                     )
                   : PageView.builder(
@@ -201,8 +201,11 @@ class _HotelDetailScreenState extends State<HotelDetailScreen> {
                           errorWidget: (context, url, error) => Container(
                             color: AppColors.surfaceDark,
                             child: const Center(
-                              child: Icon(Icons.broken_image_outlined,
-                                  color: Colors.white70, size: 40),
+                              child: Icon(
+                                Icons.broken_image_outlined,
+                                color: Colors.white70,
+                                size: 40,
+                              ),
                             ),
                           ),
                         );
@@ -281,7 +284,11 @@ class _HotelDetailScreenState extends State<HotelDetailScreen> {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Icon(Icons.location_on_outlined, size: 18, color: AppColors.textSecondary),
+              const Icon(
+                Icons.location_on_outlined,
+                size: 18,
+                color: AppColors.textSecondary,
+              ),
               const SizedBox(width: 6),
               Expanded(
                 child: Text(
@@ -538,7 +545,14 @@ class _HotelDetailScreenState extends State<HotelDetailScreen> {
         subtitle: 'Water activities',
       );
     }
-    if (_containsAny(lower, const ['tour', 'class', 'yoga', 'bicycles', 'bike', 'motorbike'])) {
+    if (_containsAny(lower, const [
+      'tour',
+      'class',
+      'yoga',
+      'bicycles',
+      'bike',
+      'motorbike',
+    ])) {
       return _AmenityMeta(
         icon: Icons.explore,
         title: amenity,
@@ -610,7 +624,13 @@ class _HotelDetailScreenState extends State<HotelDetailScreen> {
         subtitle: 'Hotel service',
       );
     }
-    if (_containsAny(lower, const ['airport', 'transfer', 'shuttle', 'seaplane', 'rolls-royce'])) {
+    if (_containsAny(lower, const [
+      'airport',
+      'transfer',
+      'shuttle',
+      'seaplane',
+      'rolls-royce',
+    ])) {
       return _AmenityMeta(
         icon: Icons.airport_shuttle,
         title: amenity,
@@ -674,6 +694,297 @@ class _HotelDetailScreenState extends State<HotelDetailScreen> {
     }
     return false;
   }
+  // ── Reviews ───────────────────────────────────────────────────────────────
+
+  static const List<Map<String, dynamic>> _staticReviews = [
+    {
+      'name': 'Nguyen Minh Tuan',
+      'avatar': 'N',
+      'rating': 5,
+      'date': '15/03/2025',
+      'comment':
+          'Absolutely stunning property! The room was immaculate, staff incredibly attentive. Breakfast spread was exceptional. Will definitely return.',
+    },
+    {
+      'name': 'Sarah Johnson',
+      'avatar': 'S',
+      'rating': 4,
+      'date': '02/03/2025',
+      'comment':
+          'Beautiful location and great amenities. Check-in was smooth and the pool area is gorgeous. Room was spacious and well-appointed.',
+    },
+    {
+      'name': 'Tran Thi Lan',
+      'avatar': 'T',
+      'rating': 5,
+      'date': '20/02/2025',
+      'comment':
+          'Exceeded all expectations. The spa treatment was divine and the beach access is private and well-maintained. Highly recommended!',
+    },
+    {
+      'name': 'David Chen',
+      'avatar': 'D',
+      'rating': 4,
+      'date': '10/02/2025',
+      'comment':
+          'Great value for the quality offered. The restaurant serves excellent local cuisine. Minor issue with AC but was resolved promptly.',
+    },
+    {
+      'name': 'Le Van Thanh',
+      'avatar': 'L',
+      'rating': 5,
+      'date': '28/01/2025',
+      'comment':
+          'Perfect honeymoon destination. The staff went above and beyond to make our stay special. Sunset views from the room are breathtaking.',
+    },
+  ];
+
+  Widget _buildReviews(HotelModel hotel) {
+    // Tổng số review = rating * 20 để cho số thực tế hơn
+    final totalReviews = (hotel.rating * 20).round();
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 22, 16, 0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // ── Header ──────────────────────────────────────────
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              const Text(
+                'Reviews',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                '($totalReviews)',
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: AppColors.textSecondary,
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 12),
+
+          // ── Rating summary ───────────────────────────────────
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: AppColors.surface,
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Row(
+              children: [
+                // Big rating number
+                Column(
+                  children: [
+                    Text(
+                      hotel.rating.toStringAsFixed(1),
+                      style: const TextStyle(
+                        fontSize: 48,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textPrimary,
+                        height: 1,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Row(
+                      children: List.generate(
+                        5,
+                        (i) => Icon(
+                          Icons.star,
+                          size: 16,
+                          color: i < hotel.rating.round()
+                              ? AppColors.star
+                              : Colors.grey.shade300,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      '$totalReviews reviews',
+                      style: const TextStyle(
+                        fontSize: 11,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(width: 20),
+
+                // Rating bars
+                Expanded(
+                  child: Column(
+                    children: List.generate(5, (index) {
+                      final star = 5 - index;
+                      // Phân bổ % dựa trên rating thực
+                      final percent = _ratingBarPercent(
+                        star,
+                        hotel.rating,
+                        totalReviews,
+                      );
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 2),
+                        child: Row(
+                          children: [
+                            Text(
+                              '$star',
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: AppColors.textSecondary,
+                              ),
+                            ),
+                            const SizedBox(width: 4),
+                            const Icon(
+                              Icons.star,
+                              size: 12,
+                              color: AppColors.star,
+                            ),
+                            const SizedBox(width: 6),
+                            Expanded(
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(4),
+                                child: LinearProgressIndicator(
+                                  value: percent,
+                                  minHeight: 6,
+                                  backgroundColor: Colors.grey.shade200,
+                                  valueColor:
+                                      const AlwaysStoppedAnimation<Color>(
+                                        AppColors.star,
+                                      ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            SizedBox(
+                              width: 28,
+                              child: Text(
+                                '${(percent * 100).round()}%',
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                  color: AppColors.textSecondary,
+                                ),
+                                textAlign: TextAlign.right,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 16),
+
+          // ── Review list ──────────────────────────────────────
+          ..._staticReviews.map((review) => _buildReviewCard(review)),
+        ],
+      ),
+    );
+  }
+
+  double _ratingBarPercent(int star, double rating, int total) {
+    if (total == 0) return 0;
+    // Phân bổ tự nhiên dựa trên rating
+    final diff = (star - rating).abs();
+    if (diff == 0) return 0.45;
+    if (diff <= 0.5) return 0.30;
+    if (diff <= 1.0) return 0.15;
+    if (diff <= 1.5) return 0.07;
+    return 0.03;
+  }
+
+  Widget _buildReviewCard(Map<String, dynamic> review) {
+    final int rating = review['rating'] as int;
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppColors.surfaceDark),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Avatar + name + date
+          Row(
+            children: [
+              CircleAvatar(
+                radius: 20,
+                backgroundColor: AppColors.primary,
+                child: Text(
+                  review['avatar'] as String,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      review['name'] as String,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    Text(
+                      review['date'] as String,
+                      style: const TextStyle(
+                        fontSize: 11,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              // Star rating
+              Row(
+                children: List.generate(
+                  5,
+                  (i) => Icon(
+                    Icons.star,
+                    size: 13,
+                    color: i < rating ? AppColors.star : Colors.grey.shade300,
+                  ),
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 10),
+
+          // Comment
+          Text(
+            review['comment'] as String,
+            style: const TextStyle(
+              fontSize: 13,
+              color: AppColors.textSecondary,
+              height: 1.5,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _buildErrorState() {
     return Center(
@@ -717,20 +1028,13 @@ class _AmenityMeta {
   });
 }
 
-enum _SortOption {
-  priceAsc,
-  priceDesc,
-  capacity,
-}
+enum _SortOption { priceAsc, priceDesc, capacity }
 
 class _RoomPickerSheet extends StatefulWidget {
   final List<RoomModel> rooms;
   final ValueChanged<RoomModel> onBook;
 
-  const _RoomPickerSheet({
-    required this.rooms,
-    required this.onBook,
-  });
+  const _RoomPickerSheet({required this.rooms, required this.onBook});
 
   @override
   State<_RoomPickerSheet> createState() => _RoomPickerSheetState();
@@ -763,8 +1067,9 @@ class _RoomPickerSheetState extends State<_RoomPickerSheet> {
     }
 
     if (_capacityFilter != null) {
-      result =
-          result.where((room) => room.capacity >= _capacityFilter!).toList();
+      result = result
+          .where((room) => room.capacity >= _capacityFilter!)
+          .toList();
     }
 
     switch (_sort) {
@@ -874,7 +1179,9 @@ class _RoomPickerSheetState extends State<_RoomPickerSheet> {
               sublabel: _typeFilter == type
                   ? CurrencyFormatter.format(
                       _minPrice(
-                        widget.rooms.where((room) => room.roomType == type).toList(),
+                        widget.rooms
+                            .where((room) => room.roomType == type)
+                            .toList(),
                       ),
                     )
                   : null,
@@ -915,10 +1222,7 @@ class _RoomPickerSheetState extends State<_RoomPickerSheet> {
         children: [
           const Text(
             'Sort:',
-            style: TextStyle(
-              fontSize: 12,
-              color: AppColors.textSecondary,
-            ),
+            style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
           ),
           const SizedBox(width: 8),
           _SortChip(
@@ -948,10 +1252,7 @@ class _RoomPickerSheetState extends State<_RoomPickerSheet> {
       padding: const EdgeInsets.fromLTRB(16, 6, 16, 4),
       child: Text(
         'Showing $count room${count != 1 ? 's' : ''}',
-        style: const TextStyle(
-          fontSize: 12,
-          color: AppColors.textSecondary,
-        ),
+        style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
       ),
     );
   }
@@ -1033,10 +1334,7 @@ class _RoomPickerSheetState extends State<_RoomPickerSheet> {
                       width: 88,
                       height: 88,
                       color: AppColors.surfaceDark,
-                      child: const Icon(
-                        Icons.hotel,
-                        color: Colors.white70,
-                      ),
+                      child: const Icon(Icons.hotel, color: Colors.white70),
                     ),
                   ),
                 ),
@@ -1123,7 +1421,9 @@ class _RoomPickerSheetState extends State<_RoomPickerSheet> {
                 spacing: 6,
                 runSpacing: 4,
                 children: [
-                  ...room.amenities.take(4).map(
+                  ...room.amenities
+                      .take(4)
+                      .map(
                         (amenity) => Container(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 8,
