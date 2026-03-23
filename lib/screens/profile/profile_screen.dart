@@ -85,72 +85,71 @@ class _ProfileScreenState extends State<ProfileScreen> {
       backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 24),
-                    _buildHeader(),
-                    const SizedBox(height: 8),
-                    const Divider(color: Color(0xFFEEEEEE), thickness: 1),
-                    _buildQuickMenu(),
-                    const Divider(color: Color(0xFFEEEEEE), thickness: 1),
-                    const SizedBox(height: 16),
-                    _buildSectionTitle('Account Setting'),
-                    const SizedBox(height: 8),
-                    _buildSettingItem(
-                      icon: Icons.person_outline,
-                      label: 'Edit profile',
-                      onTap: () async {
-                        final updated = await Navigator.push<UserModel>(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) =>
-                                EditProfileScreen(user: _currentUser),
-                          ),
-                        );
-                        if (updated != null && mounted) {
-                          setState(() => _currentUser = updated);
-                        }
-                      },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 24),
+              _buildHeader(),
+              const SizedBox(height: 8),
+              const Divider(color: Color(0xFFEEEEEE), thickness: 1),
+              _buildQuickMenu(),
+              const Divider(color: Color(0xFFEEEEEE), thickness: 1),
+              const SizedBox(height: 16),
+              _buildSectionTitle('Account Setting'),
+              const SizedBox(height: 8),
+              _buildSettingItem(
+                icon: Icons.person_outline,
+                label: 'Edit profile',
+                onTap: () async {
+                  final updated = await Navigator.push<UserModel>(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => EditProfileScreen(user: _currentUser),
                     ),
-                    _buildSettingItem(
-                      icon: Icons.translate_outlined,
-                      label: 'Change language',
-                      onTap: () {},
-                    ),
-                    _buildSettingItem(
-                      icon: Icons.dark_mode_outlined,
-                      label: 'Color mode',
-                      onTap: () {},
-                    ),
-                    const SizedBox(height: 16),
-                    _buildSectionTitle('Legal'),
-                    const SizedBox(height: 8),
-                    _buildSettingItem(
-                      icon: Icons.article_outlined,
-                      label: 'Terms and Condition',
-                      trailing: Icons.open_in_new,
-                      onTap: () {},
-                    ),
-                    _buildSettingItem(
-                      icon: Icons.shield_outlined,
-                      label: 'Privacy policy',
-                      trailing: Icons.open_in_new,
-                      onTap: () {},
-                    ),
-                    const SizedBox(height: 24),
-                    _buildLogoutButton(),
-                    const SizedBox(height: 12),
-                    const Center(
-                      child: Text(
-                        'Version 1.0.0',
-                        style: TextStyle(fontSize: 12, color: Colors.black38),
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                  ],
+                  );
+                  if (updated != null && mounted) {
+                    setState(() => _currentUser = updated);
+                  }
+                },
+              ),
+              _buildSettingItem(
+                icon: Icons.translate_outlined,
+                label: 'Change language',
+                onTap: () {},
+              ),
+              _buildSettingItem(
+                icon: Icons.dark_mode_outlined,
+                label: 'Color mode',
+                onTap: () {},
+              ),
+              const SizedBox(height: 16),
+              _buildSectionTitle('Legal'),
+              const SizedBox(height: 8),
+              _buildSettingItem(
+                icon: Icons.article_outlined,
+                label: 'Terms and Condition',
+                trailing: Icons.open_in_new,
+                onTap: () {},
+              ),
+              _buildSettingItem(
+                icon: Icons.shield_outlined,
+                label: 'Privacy policy',
+                trailing: Icons.open_in_new,
+                onTap: () {},
+              ),
+              const SizedBox(height: 24),
+              _buildLogoutButton(),
+              const SizedBox(height: 12),
+              const Center(
+                child: Text(
+                  'Version 1.0.0',
+                  style: TextStyle(fontSize: 12, color: Colors.black38),
                 ),
               ),
+              const SizedBox(height: 24),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -218,7 +217,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
             MaterialPageRoute(
               builder: (_) => WishListScreen(
                 user: widget.user,
-                wishlistIds: widget.wishlistIds,
                 allHotels: widget.allHotels,
               ),
             ),

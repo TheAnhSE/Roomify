@@ -6,8 +6,8 @@ import 'firebase_options.dart';
 import 'core/constants/app_colors.dart';
 import 'data/models/user_model.dart';
 import 'data/models/hotel_model.dart';
-import 'data/models/hotel_model.dart';
 import 'data/repositories/auth_repository.dart';
+import 'data/repositories/wishlist_repository.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/onboarding/onboarding_screen.dart';
 import 'screens/home/home_screen.dart';
@@ -111,7 +111,7 @@ class AuthWrapper extends StatelessWidget {
   }
 }
 
-// ─── Main Screen ─────────────────────────────────────────────────────────────
+// ─── Main Screen ──────────────────────────────────────────────────────────────
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
 
@@ -121,20 +121,25 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   final _authRepo = AuthRepository();
+  final _wishlistRepo = WishlistRepository();
 
   int _currentIndex = 0;
   UserModel? _user;
   bool _isLoading = true;
   String? _errorMessage;
 
-  // Wishlist state — dùng chung cho HomeScreen và WishListScreen
-  final Set<String> _wishlistIds = {};
+  // Wishlist IDs now come from Firestore stream — kept in sync automatically
+  Set<String> _wishlistIds = {};
   List<HotelModel> _allHotels = [];
 
   @override
   void initState() {
     super.initState();
     _loadUser();
+    // Listen to wishlist changes from Firestore in realtime
+    _wishlistRepo.watchWishlistedIds().listen((ids) {
+      if (mounted) setState(() => _wishlistIds = ids);
+    });
   }
 
   Future<void> _loadUser() async {
@@ -152,14 +157,18 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
-  void _onWishlistToggle(String hotelId) {
+  /// Toggle from HomeScreen — always uses the default collection
+  Future<void> _onWishlistToggle(String hotelId) async {
+    // Optimistic UI update
     setState(() {
       if (_wishlistIds.contains(hotelId)) {
-        _wishlistIds.remove(hotelId);
+        _wishlistIds = Set.from(_wishlistIds)..remove(hotelId);
       } else {
-        _wishlistIds.add(hotelId);
+        _wishlistIds = Set.from(_wishlistIds)..add(hotelId);
       }
     });
+    // Persist to Firestore (stream will reconcile)
+    await _wishlistRepo.toggleWishlist(hotelId);
   }
 
   void _onHotelsLoaded(List<HotelModel> hotels) {
@@ -202,11 +211,7 @@ class _MainScreenState extends State<MainScreen> {
           onWishlistToggle: _onWishlistToggle,
           onHotelsLoaded: _onHotelsLoaded,
         ),
-        WishListScreen(
-          user: user,
-          wishlistIds: _wishlistIds,
-          allHotels: _allHotels,
-        ),
+        WishListScreen(user: user, allHotels: _allHotels),
         const Center(
           child: Text('NotificationsScreen - pending implementation'),
         ),
@@ -236,7 +241,7 @@ class _MainScreenState extends State<MainScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.notifications_outlined),
             activeIcon: Icon(Icons.notifications),
-            label: 'Noitification',
+            label: 'Notification',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person_outline),
