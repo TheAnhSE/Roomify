@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/utils/currency_formatter.dart';
 import '../../data/models/hotel_model.dart';
@@ -153,6 +155,8 @@ class _HotelDetailScreenState extends State<HotelDetailScreen> {
                     SliverToBoxAdapter(child: _buildImageGallery(hotel)),
                     SliverToBoxAdapter(child: _buildHotelInfo(hotel)),
                     SliverToBoxAdapter(child: _buildAmenities(hotel)),
+                    if (hotel.hasCoordinates)
+                      SliverToBoxAdapter(child: _buildMapSection(hotel)),
                     SliverToBoxAdapter(child: _buildReviews(hotel)),
                     const SliverToBoxAdapter(child: SizedBox(height: 110)),
                   ],
@@ -694,6 +698,64 @@ class _HotelDetailScreenState extends State<HotelDetailScreen> {
     }
     return false;
   }
+  // ── Map ─────────────────────────────────────────────────────────────────
+
+  Widget _buildMapSection(HotelModel hotel) {
+    final position = LatLng(hotel.latitude!, hotel.longitude!);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 22, 16, 0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Location',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: AppColors.textPrimary,
+            ),
+          ),
+          const SizedBox(height: 10),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: SizedBox(
+              height: 200,
+              child: IgnorePointer(
+                child: FlutterMap(
+                  options: MapOptions(
+                    initialCenter: position,
+                    initialZoom: 15.0,
+                  ),
+                  children: [
+                    TileLayer(
+                      urlTemplate:
+                          'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                      userAgentPackageName: 'com.example.roomify',
+                    ),
+                    MarkerLayer(
+                      markers: [
+                        Marker(
+                          point: position,
+                          width: 40,
+                          height: 40,
+                          child: const Icon(
+                            Icons.location_on,
+                            color: Colors.red,
+                            size: 40,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   // ── Reviews ───────────────────────────────────────────────────────────────
 
   static const List<Map<String, dynamic>> _staticReviews = [
