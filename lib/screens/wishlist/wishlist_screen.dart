@@ -157,57 +157,20 @@ class _WishListScreenState extends State<WishListScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: SafeArea(
-        child: Column(
-          children: [
-            _buildHeader(hotels),
-            Expanded(
-              child: hotels.isEmpty
-                  ? _buildEmpty()
-                  : ListView.separated(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
-                      ),
-                      itemCount: hotels.length,
-                      separatorBuilder: (_, __) =>
-                          const Divider(height: 1, color: Color(0xFFF0F0F0)),
-                      itemBuilder: (ctx, i) => _buildHotelTile(hotels[i]),
-                    ),
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: _compareMode
-          ? FloatingActionButton.extended(
-              onPressed: _openCompare,
-              backgroundColor: AppColors.primary,
-              icon: const Icon(Icons.compare_arrows, color: Colors.white),
-              label: Text(
-                'Compare (${_compareIds.length})',
-                style: const TextStyle(color: Colors.white),
-              ),
-            )
-          : null,
-    );
-  }
 
-  Widget _buildHeader(List<HotelModel> hotels) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
-      child: Row(
-        children: [
-          const Expanded(
-            child: Text(
-              'Wishlist',
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                color: AppColors.textPrimary,
-              ),
-            ),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black87,
+        elevation: 0,
+        title: const Text(
+          'Wishlist',
+          style: TextStyle(
+            fontSize: 28,
+            fontWeight: FontWeight.w600,
+            color: Colors.black87,
           ),
-          // Compare toggle
+        ),
+        actions: [
           IconButton(
             tooltip: 'Compare hotels',
             onPressed: () => setState(() {
@@ -219,10 +182,8 @@ class _WishListScreenState extends State<WishListScreen> {
               color: _compareMode ? AppColors.primary : Colors.grey,
             ),
           ),
-          // Sort
           PopupMenuButton<WishlistSort>(
             icon: const Icon(Icons.sort, color: Colors.grey),
-            tooltip: 'Sort',
             onSelected: (s) => setState(() => _sort = s),
             itemBuilder: (_) => [
               _sortItem(
@@ -238,7 +199,6 @@ class _WishListScreenState extends State<WishListScreen> {
               ),
             ],
           ),
-          // Share
           if (hotels.isNotEmpty)
             IconButton(
               tooltip: 'Share wishlist',
@@ -247,6 +207,28 @@ class _WishListScreenState extends State<WishListScreen> {
             ),
         ],
       ),
+
+      body: hotels.isEmpty
+          ? _buildEmpty()
+          : ListView.separated(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              itemCount: hotels.length,
+              separatorBuilder: (_, __) =>
+                  const Divider(height: 1, color: Color(0xFFF0F0F0)),
+              itemBuilder: (ctx, i) => _buildHotelTile(hotels[i]),
+            ),
+
+      floatingActionButton: _compareMode
+          ? FloatingActionButton.extended(
+              onPressed: _openCompare,
+              backgroundColor: AppColors.primary,
+              icon: const Icon(Icons.compare_arrows, color: Colors.white),
+              label: Text(
+                'Compare (${_compareIds.length})',
+                style: const TextStyle(color: Colors.white),
+              ),
+            )
+          : null,
     );
   }
 
