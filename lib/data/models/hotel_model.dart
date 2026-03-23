@@ -12,6 +12,8 @@ class HotelModel {
   final int stars;
   final String checkInTime;
   final String checkOutTime;
+  final double? latitude;
+  final double? longitude;
 
   HotelModel({
     required this.id,
@@ -27,7 +29,11 @@ class HotelModel {
     required this.stars,
     required this.checkInTime,
     required this.checkOutTime,
+    this.latitude,
+    this.longitude,
   });
+
+  bool get hasCoordinates => latitude != null && longitude != null;
 
   // imageUrls[0] = thumbnail. Empty list → empty string, NEVER crash
   String get thumbnailUrl => imageUrls.isNotEmpty ? imageUrls.first : '';
@@ -46,6 +52,8 @@ class HotelModel {
         stars: map['stars'] ?? 3,
         checkInTime: map['checkInTime'] ?? '14:00',
         checkOutTime: map['checkOutTime'] ?? '12:00',
+        latitude: (map['latitude'] as num?)?.toDouble(),
+        longitude: (map['longitude'] as num?)?.toDouble(),
       );
 
   Map<String, dynamic> toMap() => {
@@ -61,5 +69,7 @@ class HotelModel {
         'stars': stars,
         'checkInTime': checkInTime,
         'checkOutTime': checkOutTime,
+        'latitude': latitude,
+        'longitude': longitude,
       };
 }

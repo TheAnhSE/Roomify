@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(flutter pub:*)",
+      "Bash(flutter analyze:*)",
+      "Bash(node update_hotels_coords.js)",
+      "Bash(npm install:*)"
+    ]
+  }
+}

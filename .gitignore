@@ -50,3 +50,8 @@ app.*.map.json
 # Release keystore — KHÔNG commit lên GitHub
 *.jks
 *.keystore
+
+# Seed scripts — node_modules and dependencies
+seed/node_modules/
+seed/package-lock.json
+seed/package.json
