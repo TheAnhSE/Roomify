@@ -20,7 +20,7 @@ class _SearchScreenState extends State<SearchScreen> {
   final _hotelRepo = HotelRepository();
   final _destinationRepo = DestinationRepository();
   final _searchController = TextEditingController();
-  
+
   List<HotelModel> _results = [];
   List<String> _cities = ['All cities'];
   String? _selectedCity;
@@ -29,7 +29,7 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   void initState() {
     super.initState();
-    _selectedCity = widget.city ?? 'All cities';
+    _selectedCity = 'All cities';
     if (widget.query != null) {
       _searchController.text = widget.query!;
     }
@@ -53,9 +53,11 @@ class _SearchScreenState extends State<SearchScreen> {
       if (mounted) {
         setState(() {
           _cities = ['All cities', ...dests.map((d) => d.name)];
-          // Ensure _selectedCity is valid
-          if (!_cities.contains(_selectedCity)) {
-             _selectedCity = 'All cities';
+          // Sau khi có cities rồi mới set city từ widget
+          if (widget.city != null && _cities.contains(widget.city)) {
+            _selectedCity = widget.city!;
+          } else {
+            _selectedCity = 'All cities';
           }
         });
       }
@@ -67,24 +69,24 @@ class _SearchScreenState extends State<SearchScreen> {
   Future<void> _search() async {
     if (!mounted) return;
     setState(() => _isLoading = true);
-    
+
     try {
       final query = _searchController.text.trim();
       List<HotelModel> hotels = [];
-      
+
       if (query.isNotEmpty) {
         hotels = await _hotelRepo.searchHotels(query);
         if (_selectedCity != 'All cities') {
-           hotels = hotels.where((h) => h.city == _selectedCity).toList();
+          hotels = hotels.where((h) => h.city == _selectedCity).toList();
         }
       } else {
         if (_selectedCity == 'All cities') {
-           hotels = await _hotelRepo.getHotels();
+          hotels = await _hotelRepo.getHotels();
         } else {
-           hotels = await _hotelRepo.getHotelsByCity(_selectedCity!);
+          hotels = await _hotelRepo.getHotelsByCity(_selectedCity!);
         }
       }
-      
+
       if (mounted) {
         setState(() {
           _results = hotels;
@@ -126,9 +128,15 @@ class _SearchScreenState extends State<SearchScreen> {
                   onSubmitted: (_) => _search(),
                   decoration: InputDecoration(
                     hintText: 'Search hotels by name...',
-                    prefixIcon: const Icon(Icons.search, color: AppColors.textSecondary),
+                    prefixIcon: const Icon(
+                      Icons.search,
+                      color: AppColors.textSecondary,
+                    ),
                     suffixIcon: IconButton(
-                      icon: const Icon(Icons.clear, color: AppColors.textSecondary),
+                      icon: const Icon(
+                        Icons.clear,
+                        color: AppColors.textSecondary,
+                      ),
                       onPressed: () {
                         _searchController.clear();
                         FocusScope.of(context).unfocus();
@@ -137,7 +145,10 @@ class _SearchScreenState extends State<SearchScreen> {
                     ),
                     filled: true,
                     fillColor: AppColors.surface,
-                    contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
+                    contentPadding: const EdgeInsets.symmetric(
+                      vertical: 0,
+                      horizontal: 16,
+                    ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide.none,
@@ -145,7 +156,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   ),
                 ),
                 const SizedBox(height: 12),
-                
+
                 // Dropdown Filter
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -157,7 +168,10 @@ class _SearchScreenState extends State<SearchScreen> {
                     child: DropdownButton<String>(
                       isExpanded: true,
                       value: _selectedCity,
-                      icon: const Icon(Icons.keyboard_arrow_down, color: AppColors.textSecondary),
+                      icon: const Icon(
+                        Icons.keyboard_arrow_down,
+                        color: AppColors.textSecondary,
+                      ),
                       items: _cities.map((city) {
                         return DropdownMenuItem(
                           value: city,
@@ -182,20 +196,20 @@ class _SearchScreenState extends State<SearchScreen> {
               ],
             ),
           ),
-          
+
           // Results
           Expanded(
             child: _isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : _results.isEmpty
-                    ? _buildEmptyState()
-                    : ListView.builder(
-                        padding: const EdgeInsets.all(16),
-                        itemCount: _results.length,
-                        itemBuilder: (context, index) {
-                          return _buildHotelCard(_results[index]);
-                        },
-                      ),
+                ? _buildEmptyState()
+                : ListView.builder(
+                    padding: const EdgeInsets.all(16),
+                    itemCount: _results.length,
+                    itemBuilder: (context, index) {
+                      return _buildHotelCard(_results[index]);
+                    },
+                  ),
           ),
         ],
       ),
@@ -211,10 +225,7 @@ class _SearchScreenState extends State<SearchScreen> {
           SizedBox(height: 16),
           Text(
             'No results found',
-            style: TextStyle(
-              fontSize: 16,
-              color: AppColors.textSecondary,
-            ),
+            style: TextStyle(fontSize: 16, color: AppColors.textSecondary),
           ),
         ],
       ),
@@ -245,7 +256,9 @@ class _SearchScreenState extends State<SearchScreen> {
           children: [
             // Image
             ClipRRect(
-              borderRadius: const BorderRadius.horizontal(left: Radius.circular(16)),
+              borderRadius: const BorderRadius.horizontal(
+                left: Radius.circular(16),
+              ),
               child: CachedNetworkImage(
                 imageUrl: hotel.thumbnailUrl,
                 width: 120,
@@ -255,17 +268,23 @@ class _SearchScreenState extends State<SearchScreen> {
                   width: 120,
                   height: 120,
                   color: Colors.grey.shade300,
-                  child: const Center(child: CircularProgressIndicator(strokeWidth: 2)),
+                  child: const Center(
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
                 ),
                 errorWidget: (context, url, error) => Container(
                   width: 120,
                   height: 120,
                   color: Colors.grey.shade300,
-                  child: const Icon(Icons.hotel, color: Colors.white54, size: 32),
+                  child: const Icon(
+                    Icons.hotel,
+                    color: Colors.white54,
+                    size: 32,
+                  ),
                 ),
               ),
             ),
-            
+
             // Details
             Expanded(
               child: Padding(
@@ -286,7 +305,11 @@ class _SearchScreenState extends State<SearchScreen> {
                     const SizedBox(height: 4),
                     Row(
                       children: [
-                        const Icon(Icons.location_on, size: 14, color: AppColors.textSecondary),
+                        const Icon(
+                          Icons.location_on,
+                          size: 14,
+                          color: AppColors.textSecondary,
+                        ),
                         const SizedBox(width: 4),
                         Expanded(
                           child: Text(
@@ -307,7 +330,11 @@ class _SearchScreenState extends State<SearchScreen> {
                       children: [
                         Row(
                           children: [
-                            const Icon(Icons.star, size: 14, color: AppColors.star),
+                            const Icon(
+                              Icons.star,
+                              size: 14,
+                              color: AppColors.star,
+                            ),
                             const SizedBox(width: 4),
                             Text(
                               hotel.rating.toString(),
