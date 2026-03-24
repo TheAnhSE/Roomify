@@ -45,7 +45,8 @@ dependencies:
   table_calendar: ^3.0.9
   flutter_map: ^8.2.2
   latlong2: ^0.9.1
-
+  crypto: ^3.0.3
+  qr_flutter: ^4.1.0
 
 dev_dependencies:
   flutter_test:

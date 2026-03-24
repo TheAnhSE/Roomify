@@ -156,8 +156,9 @@ class _CreateNewPasswordScreenState extends State<CreateNewPasswordScreen> {
                   validator: (v) {
                     if (v == null || v.isEmpty) return 'Enter password';
                     if (v.length < 6) return 'At least 6 characters';
-                    if (!v.contains(RegExp(r'[A-Z]')))
+                    if (!v.contains(RegExp(r'[A-Z]'))) {
                       return 'Must contain at least 1 uppercase letter';
+                    }
                     return null;
                   },
                 ),
